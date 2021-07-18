@@ -1,3 +1,5 @@
+<a href="https://www.npmjs.com/package/@hunteroi/discord-selfrole"><img src="https://badge.fury.io/js/%40hunteroi%2Fdiscord-selfrole.svg" alt="npm version" height="18"></a>
+
 # Discord SelfRole
 Discord SelfRole is a framework to easily create a channel with automated role-giver system.
 
