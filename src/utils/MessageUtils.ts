@@ -2,7 +2,8 @@ import { MessageEmbed, Role } from 'discord.js';
 
 import { SelfRoleManager } from '..';
 import { isNullOrWhiteSpaces } from './StringUtils';
-import { ChannelOptions } from '../types';
+import { ChannelOptions, RoleToEmojiData } from '../types';
+import { channel } from 'diagnostics_channel';
 
 /**
  * Generates the header, description and footer texts then return the generated message or embed.
@@ -56,12 +57,8 @@ export function generateDescription(
 	}
 
 	stringBuilder.push(channelOptions.message.options.description);
-	channelOptions.rolesToEmojis.forEach((rte) =>
-		stringBuilder.push(
-			`${rte.emoji} - ${rte.role instanceof Role ? rte.role : rte.name}${
-				!isNullOrWhiteSpaces(rte.smallNote) ? ` (${rte.smallNote})` : ''
-			}`.trim()
-		)
+	channelOptions.rolesToEmojis.forEach((rte: RoleToEmojiData) =>
+		stringBuilder.push(channelOptions.format(rte))
 	);
 
 	if (!isNullOrWhiteSpaces(suffix)) {

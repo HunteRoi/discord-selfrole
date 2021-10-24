@@ -1,4 +1,4 @@
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, Role } = require('discord.js');
 const { SelfRoleManager } = require('../lib');
 
 const client = new Client({
@@ -18,6 +18,10 @@ const manager = new SelfRoleManager(client, {
 
 client.on('ready', async () => {
 	await manager.registerChannel('CHANNEL_ID', {
+		format: (rte) =>
+			`${rte.emoji} - ${rte.role instanceof Role ? rte.role : rte.name}${
+				!isNullOrWhiteSpaces(rte.smallNote) ? ` (${rte.smallNote})` : ''
+			}`,
 		rolesToEmojis: [
 			{
 				emoji: '1️⃣',

@@ -3,6 +3,7 @@ import {
 	PartialUser,
 	User,
 	PartialMessageReaction,
+	Role,
 } from 'discord.js';
 
 import { SelfRoleManager, SelfRoleManagerEvents } from '..';
@@ -36,9 +37,11 @@ export const handleReaction = async (
 
 	const emoji = messageReaction.emoji;
 	const roleToEmoji: RoleToEmojiData = isNullOrWhiteSpaces(emoji.id)
-		? channelOptions.rolesToEmojis.find((rte) => rte.emoji == emoji.name)
+		? channelOptions.rolesToEmojis.find(
+				(rte: RoleToEmojiData) => rte.emoji == emoji.name
+		  )
 		: channelOptions.rolesToEmojis.find(
-				(rte) => rte.emoji == emoji.toString()
+				(rte: RoleToEmojiData) => rte.emoji == emoji.toString()
 		  );
 
 	if (!roleToEmoji) {
@@ -50,9 +53,11 @@ export const handleReaction = async (
 		return;
 	}
 
-	const channelRoles = channelOptions.rolesToEmojis.map((rte) => rte.role);
+	const channelRoles = channelOptions.rolesToEmojis.map(
+		(rte: RoleToEmojiData) => rte.role
+	);
 	const memberRoles = [...member.roles.cache.values()];
-	const nbRolesFromChannel = memberRoles.filter((role) =>
+	const nbRolesFromChannel = memberRoles.filter((role: Role) =>
 		channelRoles.includes(role.id)
 	).length;
 	const maxRolesReach =
@@ -68,21 +73,13 @@ export const handleReaction = async (
 	);
 
 	if (remove ? !roleToEmoji.removeOnReact : roleToEmoji.removeOnReact) {
-		removeRole(member, roleToEmoji.role).then(() =>
-			manager.emit(
-				SelfRoleManagerEvents.roleRemove,
-				roleToEmoji.role,
-				member
-			)
-		);
+		const success = await removeRole(member, roleToEmoji.role);
+		if (success)
+			manager.emit(SelfRoleManagerEvents.roleRemove, roleToEmoji.role, member);
 	} else if (!maxRolesReach) {
-		addRole(member, roleToEmoji.role).then(() =>
-			manager.emit(
-				SelfRoleManagerEvents.roleAdd,
-				roleToEmoji.role,
-				member
-			)
-		);
+		const success = await addRole(member, roleToEmoji.role);
+		if (success)
+			manager.emit(SelfRoleManagerEvents.roleAdd, roleToEmoji.role, member);
 	} else {
 		manager.emit(SelfRoleManagerEvents.maxRolesReach, member);
 	}
