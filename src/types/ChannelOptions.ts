@@ -1,4 +1,5 @@
 import { Snowflake } from 'discord.js';
+
 import { MessageOptions } from './MessageOptions';
 import { RoleToEmojiData } from './RoleToEmojiData';
 
@@ -8,44 +9,45 @@ import { RoleToEmojiData } from './RoleToEmojiData';
  * @interface ChannelOptions
  */
 export interface ChannelOptions {
-  /**
-   * The channel ID.
-   *
-   * @type {Snowflake}
-   */
-  channelID?: Snowflake;
+	/**
+	 * The channel ID.
+	 *
+	 * @type {Snowflake}
+	 */
+	channelID?: Snowflake;
 
-  /**
-   * The list of role-emoji pairs to add as reactions to the message.
-   *
-   * @type {RoleToEmojiData[]}
-   */
-  rolesToEmojis: RoleToEmojiData[];
+	/**
+	 * The list of role-emoji pairs to add as reactions to the message.
+	 * A maximum of 5 role-emoji pairs are taken when using emoji button components.
+	 *
+	 * @type {RoleToEmojiData[]}
+	 */
+	rolesToEmojis: RoleToEmojiData[];
 
-  /**
-   * Data about the message.
-   *
-   */
-  message: {
-    /**
-     * The message id.
-     *
-     * @type {Snowflake}
-     */
-    id?: Snowflake;
+	/**
+	 * Data about the message.
+	 *
+	 */
+	message: {
+		/**
+		 * The message id.
+		 *
+		 * @type {Snowflake}
+		 */
+		id?: Snowflake;
 
-    /**
-     * The content and type of the message sent in the registered channel.
-     *
-     * @type {MessageOptions}
-     */
-    options: MessageOptions;
-  };
+		/**
+		 * The content and type of the message sent in the registered channel.
+		 *
+		 * @type {MessageOptions}
+		 */
+		options: MessageOptions;
+	};
 
-  /**
-   * The maximum number of roles which can be assigned to a single user.
-   *
-   * @type {number}
-   */
-  maxRolesAssigned?: number;
+	/**
+	 * The maximum number of roles which can be assigned to a single user.
+	 *
+	 * @type {number}
+	 */
+	maxRolesAssigned?: number;
 }
