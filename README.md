@@ -1,4 +1,5 @@
-<a href="https://www.npmjs.com/package/@hunteroi/discord-selfrole"><img src="https://badge.fury.io/js/%40hunteroi%2Fdiscord-selfrole.svg" alt="npm version" height="18"></a>
+<a href="https://www.npmjs.com/@hunteroi/discord-selfrole"><img src="https://img.shields.io/github/v/release/hunteroi/discord-selfrole?style=for-the-badge" alt="release version"/></a>
+<a href="https://www.npmjs.com/@hunteroi/discord-selfrole"><img src="https://img.shields.io/npm/dt/@hunteroi/discord-selfrole?style=for-the-badge" alt="nb downloads npm"/></a>
 
 # Discord SelfRole
 
