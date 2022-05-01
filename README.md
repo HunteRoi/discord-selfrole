@@ -12,6 +12,8 @@ Discord SelfRole is a framework to easily create a channel with automated role-g
 
 ![IMAGE](./assets/example.gif)
 
+See [./example/index.js](example/index.js).
+
 ## Prerequisites ⚠️
 
 Starting at **v2.0.0**, you must use **NodeJS v16.6.0 or higher** to run a bot with this library.
@@ -37,10 +39,6 @@ In case you are willing to use interactions and buttons, you will need these int
 ```sh
 npm install --save @hunteroi/discord-selfrole
 ```
-
-## Examples
-
-See [./example/index.js](example/index.js).
 
 ## Events
 
