@@ -5,10 +5,10 @@
 
 Discord SelfRole is a framework to easily create a channel with automated role-giver system.
 
--   Supports custom emojis
--   Emits events like `channelRegister`, `roleAdd`, `reactionRemove` and **9 more**!
--   Allow full customization of the embed (you can add image, thumbnail, etc.)
--   And much more!
+- Supports custom emojis
+- Emits events like `channelRegister`, `roleAdd`, `reactionRemove` and **9 more**!
+- Allow full customization of the embed (you can add image, thumbnail, etc.)
+- And much more!
 
 ![IMAGE](assets/example.gif)
 
@@ -20,17 +20,17 @@ You also must not forget to include [mandatory intents and partials](#mandatory-
 
 ### Mandatory intents
 
--   GUILDS: used to access guild content such as channels.
--   GUILD_MEMBERS: used to access guild members and update their roles.
--   GUILD_MESSAGES: used to read guild messages.
+- GUILDS: used to access guild content such as channels.
+- GUILD_MEMBERS: used to access guild members and update their roles.
+- GUILD_MESSAGES: used to read guild messages.
 
 In case you are willing to use reactions, you will need these intents:
 
--   GUILD_MESSAGE_REACTIONS: used to access guild messages reactions.
+- GUILD_MESSAGE_REACTIONS: used to access guild messages reactions.
 
 In case you are willing to use interactions and buttons, you will need these intents:
 
--   GUILD_INTERACTIONS: used to access direct messages to the bot.
+- GUILD_INTERACTIONS: used to access direct messages to the bot.
 
 ## Installation
 

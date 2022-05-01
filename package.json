@@ -1,30 +1,25 @@
 {
   "name": "@hunteroi/discord-selfrole",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A framework to integrate a channel with a automated role-giver system inside your Discord bot built with DiscordJS",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\" --tab-width 4",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\" \"example/**/*.ts\" \"example/**/*.js\" ",
     "lint": "tslint -p tsconfig.json",
-    "prepare": "npm run build",
-    "example": "npm run build & node ./example/index.js"
+    "example": "yarn run build & node ./example/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hunteroi/discord-selfrole.git"
-  },
+  "repository": "git://github.com/hunteroi/discord-selfrole.git",
   "keywords": [
     "selfrole",
     "discordjs",
     "roleme"
   ],
-	"author": "HunteRoi <me@tinaeldevresse.eu> (https://tinaeldevresse.eu/)",
-	"funding": "https://github.com/sponsors/hunteroi",
-	"engines": {
-	  "node": ">=16.6.0"
-	},
+  "author": "HunteRoi <me@tinaeldevresse.eu> (https://tinaeldevresse.eu/)",
+  "funding": "https://github.com/sponsors/hunteroi",
+  "engines": {
+    "node": ">=16.6.0"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/hunteroi/discord-selfrole/issues"

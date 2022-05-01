@@ -1,189 +1,173 @@
 import {
-	Client,
-	Collection,
-	Intents,
-	Interaction,
-	Snowflake,
+  Client,
+  Collection,
+  Intents,
+  Interaction,
+  Snowflake,
 } from 'discord.js';
 import EventEmitter from 'events';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
 import { ChannelOptions, SelfRoleOptions } from './types';
 import {
-	handleUnregistering,
-	handleRegistering,
-	handleReaction,
-	handleInteraction,
+  handleUnregistering,
+  handleRegistering,
+  handleReaction,
+  handleInteraction,
 } from './handlers';
 
 export class SelfRoleManager extends EventEmitter {
-	/**
-	 * The options of the manager.
-	 *
-	 * @type {SelfRoleOptions}
-	 */
-	public readonly options: SelfRoleOptions;
+  /**
+   * The options of the manager.
+   *
+   * @type {SelfRoleOptions}
+   */
+  public readonly options: SelfRoleOptions;
 
-	/**
-	 * The client that instantiated this Manager
-	 * @name SelfRoleManager#client
-	 * @type {Client}
-	 * @readonly
-	 */
-	public readonly client: Client;
+  /**
+   * The client that instantiated this Manager
+   * @name SelfRoleManager#client
+   * @type {Client}
+   * @readonly
+   */
+  public readonly client: Client;
 
-	/**
-	 * The collection of registered channels.
-	 *
-	 * @name SelfRoleManager#channels
-	 * @type {Collection<Snowflake, ChannelOptions>}
-	 */
-	public readonly channels: Collection<Snowflake, ChannelOptions>;
+  /**
+   * The collection of registered channels.
+   *
+   * @name SelfRoleManager#channels
+   * @type {Collection<Snowflake, ChannelOptions>}
+   */
+  public readonly channels: Collection<Snowflake, ChannelOptions>;
 
-	/**
-	 * Creates an instance of SelfRoleManager.
-	 * @param {Client} [client] The client that instantiated this Manager
-	 * @param {SelfRoleOptions} [options={
-	 *     deleteAfterUnregistration: false,
-	 *     channelsMessagesFetchLimit: 3
-	 *   }]
-	 */
-	constructor(
-		client: Client,
-		options: SelfRoleOptions = {
-			deleteAfterUnregistration: false,
-			channelsMessagesFetchLimit: 3,
-		}
-	) {
-		super();
+  /**
+   * Creates an instance of SelfRoleManager.
+   * @param {Client} [client] The client that instantiated this Manager
+   * @param {SelfRoleOptions} [options={
+   *     deleteAfterUnregistration: false,
+   *     channelsMessagesFetchLimit: 3
+   *   }]
+   */
+  constructor(
+    client: Client,
+    options: SelfRoleOptions = {
+      deleteAfterUnregistration: false,
+      channelsMessagesFetchLimit: 3,
+    }
+  ) {
+    super();
 
-		const intents = new Intents(client.options.intents);
-		if (!intents.has(Intents.FLAGS.GUILDS)) {
-			throw new Error('GUILDS intent is required to use this package!');
-		}
-		if (!intents.has(Intents.FLAGS.GUILD_MEMBERS)) {
-			throw new Error(
-				'GUILD_MEMBERS intent is required to use this package!'
-			);
-		}
-		if (options.useReactions) {
-			if (!intents.has(Intents.FLAGS.GUILD_MESSAGES)) {
-				throw new Error(
-					'GUILD_MESSAGES intent is required to use this package!'
-				);
-			}
-			if (!intents.has(Intents.FLAGS.GUILD_MESSAGE_REACTIONS)) {
-				throw new Error(
-					'GUILD_MESSAGE_REACTIONS intent is required to use this package!'
-				);
-			}
-		} else {
-			if (!intents.has(Intents.FLAGS.GUILD_INTEGRATIONS)) {
-				throw new Error(
-					'GUILD_INTEGRATIONS intent is required to use this package!'
-				);
-			}
-		}
+    const intents = new Intents(client.options.intents);
+    if (!intents.has(Intents.FLAGS.GUILDS)) {
+      throw new Error('GUILDS intent is required to use this package!');
+    }
+    if (!intents.has(Intents.FLAGS.GUILD_MEMBERS)) {
+      throw new Error('GUILD_MEMBERS intent is required to use this package!');
+    }
+    if (options.useReactions) {
+      if (!intents.has(Intents.FLAGS.GUILD_MESSAGES)) {
+        throw new Error(
+          'GUILD_MESSAGES intent is required to use this package!'
+        );
+      }
+      if (!intents.has(Intents.FLAGS.GUILD_MESSAGE_REACTIONS)) {
+        throw new Error(
+          'GUILD_MESSAGE_REACTIONS intent is required to use this package!'
+        );
+      }
+    } else {
+      if (!intents.has(Intents.FLAGS.GUILD_INTEGRATIONS)) {
+        throw new Error(
+          'GUILD_INTEGRATIONS intent is required to use this package!'
+        );
+      }
+    }
 
-		this.client = client;
-		this.options = options;
-		this.channels = new Collection<Snowflake, ChannelOptions>();
+    this.client = client;
+    this.options = options;
+    this.channels = new Collection<Snowflake, ChannelOptions>();
 
-		if (this.options.useReactions) {
-			this.client.on(
-				'messageReactionAdd',
-				async (messageReaction, user) =>
-					handleReaction(this, messageReaction, user)
-			);
-			this.client.on(
-				'messageReactionRemove',
-				async (messageReaction, user) =>
-					handleReaction(this, messageReaction, user, true)
-			);
-		} else {
-			this.client.on(
-				'interactionCreate',
-				async (interaction: Interaction) => {
-					if (interaction.isButton()) {
-						await interaction.deferReply({
-							ephemeral: true,
-							fetchReply: true,
-						});
+    if (this.options.useReactions) {
+      this.client.on('messageReactionAdd', async (messageReaction, user) =>
+        handleReaction(this, messageReaction, user)
+      );
+      this.client.on('messageReactionRemove', async (messageReaction, user) =>
+        handleReaction(this, messageReaction, user, true)
+      );
+    } else {
+      this.client.on('interactionCreate', async (interaction: Interaction) => {
+        if (interaction.isButton()) {
+          await interaction.deferReply({
+            ephemeral: true,
+            fetchReply: true,
+          });
 
-						await handleInteraction(this, interaction);
-					}
-				}
-			);
-		}
+          await handleInteraction(this, interaction);
+        }
+      });
+    }
 
-		this.on(
-			SelfRoleManagerEvents.channelRegister,
-			async (channel, options) =>
-				handleRegistering(this, channel, options)
-		);
-		if (this.options.deleteAfterUnregistration) {
-			this.on(
-				SelfRoleManagerEvents.channelUnregister,
-				async (channel, options) =>
-					handleUnregistering(this, channel, options)
-			);
-		}
-	}
+    this.on(SelfRoleManagerEvents.channelRegister, async (channel, options) =>
+      handleRegistering(this, channel, options)
+    );
+    if (this.options.deleteAfterUnregistration) {
+      this.on(
+        SelfRoleManagerEvents.channelUnregister,
+        async (channel, options) => handleUnregistering(this, channel, options)
+      );
+    }
+  }
 
-	/**
-	 * Registers a channel. When a user reacts to the message in it, a role will be given/removed.
-	 *
-	 * @name SelfRoleManager#registerChannel
-	 * @param {Snowflake} channelID
-	 * @param {ChannelOptions} options
-	 */
-	async registerChannel(channelID: Snowflake, options: ChannelOptions) {
-		const channel = await this.client.channels.fetch(channelID);
-		if (channel) {
-			options.channelID = channelID;
-			this.channels.set(channelID, options);
-			this.emit(SelfRoleManagerEvents.channelRegister, channel, options);
-		} else {
-			this.emit(
-				SelfRoleManagerEvents.error,
-				null,
-				`There is no channel with the id ${channelID}`
-			);
-		}
-	}
+  /**
+   * Registers a channel. When a user reacts to the message in it, a role will be given/removed.
+   *
+   * @name SelfRoleManager#registerChannel
+   * @param {Snowflake} channelID
+   * @param {ChannelOptions} options
+   */
+  async registerChannel(channelID: Snowflake, options: ChannelOptions) {
+    const channel = await this.client.channels.fetch(channelID);
+    if (channel) {
+      options.channelID = channelID;
+      this.channels.set(channelID, options);
+      this.emit(SelfRoleManagerEvents.channelRegister, channel, options);
+    } else {
+      this.emit(
+        SelfRoleManagerEvents.error,
+        null,
+        `There is no channel with the id ${channelID}`
+      );
+    }
+  }
 
-	/**
-	 * Unregisters a channel. When a user reacts to the message in it, nothing will happen.
-	 *
-	 * @name SelfRoleManager#unregisterChannel
-	 * @param {Snowflake} channelID
-	 */
-	async unregisterChannel(channelID: Snowflake) {
-		const channel = await this.client.channels.fetch(channelID);
-		if (channel) {
-			const options = this.channels.get(channelID);
-			const isDeleted = this.channels.delete(channelID);
-			if (isDeleted) {
-				this.emit(
-					SelfRoleManagerEvents.channelUnregister,
-					channel,
-					options
-				);
-			} else {
-				this.emit(
-					SelfRoleManagerEvents.error,
-					null,
-					`The channel with the id ${channelID} could not get unregistered`
-				);
-			}
-		} else {
-			this.emit(
-				SelfRoleManagerEvents.error,
-				null,
-				`There is no channel with the id ${channelID}`
-			);
-		}
-	}
+  /**
+   * Unregisters a channel. When a user reacts to the message in it, nothing will happen.
+   *
+   * @name SelfRoleManager#unregisterChannel
+   * @param {Snowflake} channelID
+   */
+  async unregisterChannel(channelID: Snowflake) {
+    const channel = await this.client.channels.fetch(channelID);
+    if (channel) {
+      const options = this.channels.get(channelID);
+      const isDeleted = this.channels.delete(channelID);
+      if (isDeleted) {
+        this.emit(SelfRoleManagerEvents.channelUnregister, channel, options);
+      } else {
+        this.emit(
+          SelfRoleManagerEvents.error,
+          null,
+          `The channel with the id ${channelID} could not get unregistered`
+        );
+      }
+    } else {
+      this.emit(
+        SelfRoleManagerEvents.error,
+        null,
+        `There is no channel with the id ${channelID}`
+      );
+    }
+  }
 }
 
 /**

@@ -1,19 +1,19 @@
 export enum SelfRoleManagerEvents {
-	channelRegister = 'channelRegister',
-	channelUnregister = 'channelUnregister',
+  channelRegister = 'channelRegister',
+  channelUnregister = 'channelUnregister',
 
-	messageRetrieve = 'messageRetrieve',
-	messageCreate = 'messageCreate',
-	messageDelete = 'messageDelete',
+  messageRetrieve = 'messageRetrieve',
+  messageCreate = 'messageCreate',
+  messageDelete = 'messageDelete',
 
-	roleAdd = 'roleAdd',
-	roleRemove = 'roleRemove',
+  roleAdd = 'roleAdd',
+  roleRemove = 'roleRemove',
 
-	reactionAdd = 'reactionAdd',
-	reactionRemove = 'reactionRemove',
-	interaction = 'interaction',
+  reactionAdd = 'reactionAdd',
+  reactionRemove = 'reactionRemove',
+  interaction = 'interaction',
 
-	maxRolesReach = 'maxRolesReach',
+  maxRolesReach = 'maxRolesReach',
 
-	error = 'error',
+  error = 'error',
 }

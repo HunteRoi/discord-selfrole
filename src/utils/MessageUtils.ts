@@ -14,24 +14,24 @@ import { channel } from 'diagnostics_channel';
  * @returns
  */
 export function generateMessage(
-	manager: SelfRoleManager,
-	channelOptions: ChannelOptions
+  manager: SelfRoleManager,
+  channelOptions: ChannelOptions
 ): MessageEmbed | string {
-	const description = generateDescription(
-		channelOptions,
-		manager.options.descriptionPrefix,
-		manager.options.descriptionSuffix
-	);
+  const description = generateDescription(
+    channelOptions,
+    manager.options.descriptionPrefix,
+    manager.options.descriptionSuffix
+  );
 
-	if (channelOptions.message.options.sendAsEmbed) {
-		const embed = new MessageEmbed(channelOptions.message.options)
-			.setDescription(description)
-			.setTimestamp();
+  if (channelOptions.message.options.sendAsEmbed) {
+    const embed = new MessageEmbed(channelOptions.message.options)
+      .setDescription(description)
+      .setTimestamp();
 
-		return embed;
-	}
+    return embed;
+  }
 
-	return description;
+  return description;
 }
 
 /**
@@ -45,25 +45,25 @@ export function generateMessage(
  * @returns {string}
  */
 export function generateDescription(
-	channelOptions: ChannelOptions,
-	prefix?: string,
-	suffix?: string,
-	separator = '\n'
+  channelOptions: ChannelOptions,
+  prefix?: string,
+  suffix?: string,
+  separator = '\n'
 ): string {
-	const stringBuilder: string[] = [];
+  const stringBuilder: string[] = [];
 
-	if (!isNullOrWhiteSpaces(prefix)) {
-		stringBuilder.push(prefix);
-	}
+  if (!isNullOrWhiteSpaces(prefix)) {
+    stringBuilder.push(prefix);
+  }
 
-	stringBuilder.push(channelOptions.message.options.description);
-	channelOptions.rolesToEmojis.forEach((rte: RoleToEmojiData) =>
-		stringBuilder.push(channelOptions.format(rte))
-	);
+  stringBuilder.push(channelOptions.message.options.description);
+  channelOptions.rolesToEmojis.forEach((rte: RoleToEmojiData) =>
+    stringBuilder.push(channelOptions.format(rte))
+  );
 
-	if (!isNullOrWhiteSpaces(suffix)) {
-		stringBuilder.push(suffix);
-	}
+  if (!isNullOrWhiteSpaces(suffix)) {
+    stringBuilder.push(suffix);
+  }
 
-	return stringBuilder.join(separator);
+  return stringBuilder.join(separator);
 }

@@ -11,19 +11,19 @@ import { ChannelOptions } from '../types';
  * @param options
  */
 export const handleUnregistering = async (
-	manager: SelfRoleManager,
-	channel: TextChannel,
-	options: ChannelOptions
+  manager: SelfRoleManager,
+  channel: TextChannel,
+  options: ChannelOptions
 ) => {
-	const messages = await channel.messages.fetch(options.message.id);
+  const messages = await channel.messages.fetch(options.message.id);
 
-	let message: Message;
-	if (messages instanceof Collection) {
-		message = messages.first();
-	} else if (messages instanceof Message) message = messages;
+  let message: Message;
+  if (messages instanceof Collection) {
+    message = messages.first();
+  } else if (messages instanceof Message) message = messages;
 
-	if (message) {
-		message.delete();
-		manager.emit(SelfRoleManagerEvents.messageDelete, message);
-	}
+  if (message) {
+    message.delete();
+    manager.emit(SelfRoleManagerEvents.messageDelete, message);
+  }
 };
