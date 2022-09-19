@@ -1,11 +1,14 @@
 import {
-  TextChannel,
-  Snowflake,
-  MessageEmbed,
-  MessageActionRow,
-  MessageButton,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ComponentType,
+  EmbedBuilder,
   Message,
+  MessageOptions,
   Role,
+  Snowflake,
+  TextChannel
 } from 'discord.js';
 
 import { SelfRoleManager, SelfRoleManagerEvents } from '..';
@@ -43,32 +46,35 @@ export const handleRegistering = async (
     id = message.id;
     manager.emit(SelfRoleManagerEvents.messageRetrieve, message);
   } else {
-    let row: MessageActionRow;
+    let actionRowBuilder: ActionRowBuilder<ButtonBuilder>;
     const content = generateMessage(manager, options);
 
     if (!manager.options.useReactions) {
-      row = new MessageActionRow().addComponents(
+      actionRowBuilder = new ActionRowBuilder<ButtonBuilder>().addComponents(
         ...options.rolesToEmojis
           .slice(0, 5) // a maximum of 5 buttons can be created per action row
           .map((rte: RoleToEmojiData) =>
-            new MessageButton()
+            new ButtonBuilder()
               .setEmoji(rte.emoji)
               .setCustomId(rte.role instanceof Role ? rte.role.id : rte.role)
-              .setStyle('SECONDARY')
+              .setStyle(ButtonStyle.Secondary)
           )
       );
     }
-    const message = await channel.send(
-      row
-        ? {
-            embeds: content instanceof MessageEmbed ? [content] : [],
-            content: content instanceof MessageEmbed ? undefined : content,
-            components: [row],
-          }
-        : content instanceof MessageEmbed
-        ? { embeds: [content] }
-        : content
-    );
+
+    const messageToSend: MessageOptions = {};
+
+    if (actionRowBuilder) {
+      messageToSend.components = [actionRowBuilder];
+    }
+
+    if (content instanceof EmbedBuilder) {
+      messageToSend.embeds = [content];
+    } else {
+      messageToSend.content = content;
+    }
+
+    const message = await channel.send(messageToSend);
     id = message.id;
     manager.emit(SelfRoleManagerEvents.messageCreate, message);
     if (manager.options.useReactions) {

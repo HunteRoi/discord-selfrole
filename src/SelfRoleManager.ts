@@ -4,9 +4,13 @@ import {
   Collection,
   IntentsBitField,
   Interaction,
+  MessageReaction,
+  PartialMessageReaction,
+  PartialUser,
   RoleResolvable,
   Snowflake,
   TextChannel,
+  User,
 } from 'discord.js';
 import EventEmitter from 'events';
 
@@ -92,11 +96,19 @@ export class SelfRoleManager extends EventEmitter {
     this.channels = new Collection<Snowflake, ChannelOptions>();
 
     if (this.options.useReactions) {
-      this.client.on('messageReactionAdd', async (messageReaction, user) =>
-        handleReaction(this, messageReaction, user)
+      this.client.on(
+        'messageReactionAdd',
+        async (
+          messageReaction: MessageReaction | PartialMessageReaction,
+          user: User | PartialUser
+        ) => handleReaction(this, messageReaction, user)
       );
-      this.client.on('messageReactionRemove', async (messageReaction, user) =>
-        handleReaction(this, messageReaction, user, true)
+      this.client.on(
+        'messageReactionRemove',
+        async (
+          messageReaction: MessageReaction | PartialMessageReaction,
+          user: User | PartialUser
+        ) => handleReaction(this, messageReaction, user, true)
       );
     } else {
       this.client.on('interactionCreate', async (interaction: Interaction) => {
