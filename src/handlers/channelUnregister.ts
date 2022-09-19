@@ -23,7 +23,7 @@ export const handleUnregistering = async (
   } else if (messages instanceof Message) message = messages;
 
   if (message) {
-    message.delete();
+    await message.delete();
     manager.emit(SelfRoleManagerEvents.messageDelete, message);
   }
 };

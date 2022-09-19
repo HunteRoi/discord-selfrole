@@ -38,10 +38,10 @@ export const handleReaction = async (
   const emoji = messageReaction.emoji;
   const roleToEmoji: RoleToEmojiData = isNullOrWhiteSpaces(emoji.id)
     ? channelOptions.rolesToEmojis.find(
-        (rte: RoleToEmojiData) => rte.emoji == emoji.name
+        (rte: RoleToEmojiData) => rte.emoji === emoji.name
       )
     : channelOptions.rolesToEmojis.find(
-        (rte: RoleToEmojiData) => rte.emoji == emoji.toString()
+        (rte: RoleToEmojiData) => rte.emoji === emoji.toString()
       );
 
   if (!roleToEmoji) {

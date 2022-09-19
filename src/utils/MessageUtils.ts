@@ -1,9 +1,8 @@
-import { MessageEmbed, Role } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 
 import { SelfRoleManager } from '..';
 import { isNullOrWhiteSpaces } from './StringUtils';
 import { ChannelOptions, RoleToEmojiData } from '../types';
-import { channel } from 'diagnostics_channel';
 
 /**
  * Generates the header, description and footer texts then return the generated message or embed.
@@ -16,7 +15,7 @@ import { channel } from 'diagnostics_channel';
 export function generateMessage(
   manager: SelfRoleManager,
   channelOptions: ChannelOptions
-): MessageEmbed | string {
+): EmbedBuilder | string {
   const description = generateDescription(
     channelOptions,
     manager.options.descriptionPrefix,
@@ -24,11 +23,9 @@ export function generateMessage(
   );
 
   if (channelOptions.message.options.sendAsEmbed) {
-    const embed = new MessageEmbed(channelOptions.message.options)
+    return new EmbedBuilder(channelOptions.message.options)
       .setDescription(description)
       .setTimestamp();
-
-    return embed;
   }
 
   return description;

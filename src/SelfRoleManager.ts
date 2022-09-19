@@ -1,9 +1,11 @@
 import {
   Client,
   Collection,
-  Intents,
+  IntentsBitField,
   Interaction,
-  Snowflake,
+  TextChannel,
+  RoleResolvable,
+  ButtonInteraction, Snowflake
 } from 'discord.js';
 import EventEmitter from 'events';
 
@@ -43,48 +45,49 @@ export class SelfRoleManager extends EventEmitter {
   /**
    * Creates an instance of SelfRoleManager.
    * @param {Client} [client] The client that instantiated this Manager
-   * @param {SelfRoleOptions} [options={
+   * @param {SelfRoleOptions} [roleOptions={
    *     deleteAfterUnregistration: false,
    *     channelsMessagesFetchLimit: 3
    *   }]
    */
   constructor(
     client: Client,
-    options: SelfRoleOptions = {
+    roleOptions: SelfRoleOptions = {
       deleteAfterUnregistration: false,
       channelsMessagesFetchLimit: 3,
     }
   ) {
     super();
 
-    const intents = new Intents(client.options.intents);
-    if (!intents.has(Intents.FLAGS.GUILDS)) {
-      throw new Error('GUILDS intent is required to use this package!');
+    const intents = new IntentsBitField(client.options.intents);
+
+    if (!intents.has(IntentsBitField.Flags.Guilds)) {
+      throw new Error('Guilds intent bitfield is required to use this package!');
     }
-    if (!intents.has(Intents.FLAGS.GUILD_MEMBERS)) {
-      throw new Error('GUILD_MEMBERS intent is required to use this package!');
+    if (!intents.has(IntentsBitField.Flags.GuildMembers)) {
+      throw new Error('GuildMembers intent bitfield is required to use this package!');
     }
-    if (options.useReactions) {
-      if (!intents.has(Intents.FLAGS.GUILD_MESSAGES)) {
+    if (roleOptions.useReactions) {
+      if (!intents.has(IntentsBitField.Flags.GuildMessages)) {
         throw new Error(
-          'GUILD_MESSAGES intent is required to use this package!'
+          'GuildMessages intent bitfield is required to use this package!'
         );
       }
-      if (!intents.has(Intents.FLAGS.GUILD_MESSAGE_REACTIONS)) {
+      if (!intents.has(IntentsBitField.Flags.GuildMessageReactions)) {
         throw new Error(
-          'GUILD_MESSAGE_REACTIONS intent is required to use this package!'
+          'GuildMessageReactions intent bitfield is required to use this package!'
         );
       }
     } else {
-      if (!intents.has(Intents.FLAGS.GUILD_INTEGRATIONS)) {
+      if (!intents.has(IntentsBitField.Flags.GuildIntegrations)) {
         throw new Error(
-          'GUILD_INTEGRATIONS intent is required to use this package!'
+          'GuildIntegrations intent bitfield is required to use this package!'
         );
       }
     }
 
     this.client = client;
-    this.options = options;
+    this.options = roleOptions;
     this.channels = new Collection<Snowflake, ChannelOptions>();
 
     if (this.options.useReactions) {

@@ -1,23 +1,20 @@
 import {
   ButtonInteraction,
-  MessageButton,
   Role,
-  GuildMember,
+  GuildMember, ButtonComponent
 } from 'discord.js';
 
 import { isNullOrWhiteSpaces } from '../utils/StringUtils';
 import { addRole, removeRole } from '../utils/MemberUtils';
 import { SelfRoleManagerEvents } from '../SelfRoleManagerEvents';
-import { RoleToEmojiData } from '../types/RoleToEmojiData';
+import { RoleToEmojiData } from '../types';
 import { SelfRoleManager } from '..';
 
 /**
  * Handles the interaction by granting or removing the related role to the provided guild member.
  *
  * @param manager
- * @param messageReaction
- * @param user
- * @param remove
+ * @param interaction
  * @returns
  */
 export const handleInteraction = async (
@@ -33,7 +30,7 @@ export const handleInteraction = async (
   const channelOptions = manager.channels.get(interaction.channelId);
   if (!channelOptions) return;
 
-  const button = interaction.component as MessageButton;
+  const button = interaction.component as ButtonComponent;
   const emoji = button.emoji;
   const roleToEmoji: RoleToEmojiData = button.customId
     ? channelOptions.rolesToEmojis.find(
@@ -41,10 +38,10 @@ export const handleInteraction = async (
       )
     : isNullOrWhiteSpaces(emoji.id)
     ? channelOptions.rolesToEmojis.find(
-        (rte: RoleToEmojiData) => rte.emoji == emoji.name
+        (rte: RoleToEmojiData) => rte.emoji === emoji.name
       )
     : channelOptions.rolesToEmojis.find(
-        (rte: RoleToEmojiData) => rte.emoji == emoji.toString()
+        (rte: RoleToEmojiData) => rte.emoji === emoji.toString()
       );
   if (!roleToEmoji) {
     manager.emit(
@@ -67,7 +64,7 @@ export const handleInteraction = async (
     channelOptions.maxRolesAssigned &&
     rolesFromChannel.length >= channelOptions.maxRolesAssigned;
   const remove = rolesFromChannel.some(
-    (role: Role) => role === roleToEmoji.role || role.id == roleToEmoji.role
+    (role: Role) => role === roleToEmoji.role || role.id === roleToEmoji.role
   );
 
   manager.emit(SelfRoleManagerEvents.interaction, roleToEmoji, interaction);
