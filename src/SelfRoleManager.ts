@@ -113,13 +113,13 @@ export class SelfRoleManager extends EventEmitter {
 
     this.on(
       SelfRoleManagerEvents.channelRegister,
-      async (channel, channelOptions) =>
+      async (channel: TextChannel, channelOptions: ChannelOptions) =>
         handleRegistering(this, channel, channelOptions)
     );
     if (this.options.deleteAfterUnregistration) {
       this.on(
         SelfRoleManagerEvents.channelUnregister,
-        async (channel, channelOptions) =>
+        async (channel: TextChannel, channelOptions: ChannelOptions) =>
           handleUnregistering(this, channel, channelOptions)
       );
     }
