@@ -1,22 +1,22 @@
 import {
+  ButtonInteraction,
   Client,
   Collection,
   IntentsBitField,
   Interaction,
-  TextChannel,
   RoleResolvable,
-  ButtonInteraction,
   Snowflake,
+  TextChannel,
 } from 'discord.js';
 import EventEmitter from 'events';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
 import { ChannelOptions, SelfRoleOptions } from './types';
 import {
-  handleUnregistering,
-  handleRegistering,
-  handleReaction,
   handleInteraction,
+  handleReaction,
+  handleRegistering,
+  handleUnregistering,
 } from './handlers';
 
 export class SelfRoleManager extends EventEmitter {
@@ -46,14 +46,14 @@ export class SelfRoleManager extends EventEmitter {
   /**
    * Creates an instance of SelfRoleManager.
    * @param {Client} [client] The client that instantiated this Manager
-   * @param {SelfRoleOptions} [roleOptions={
+   * @param {SelfRoleOptions} [options={
    *     deleteAfterUnregistration: false,
    *     channelsMessagesFetchLimit: 3
    *   }]
    */
   constructor(
     client: Client,
-    roleOptions: SelfRoleOptions = {
+    options: SelfRoleOptions = {
       deleteAfterUnregistration: false,
       channelsMessagesFetchLimit: 3,
     }
@@ -63,36 +63,32 @@ export class SelfRoleManager extends EventEmitter {
     const intents = new IntentsBitField(client.options.intents);
 
     if (!intents.has(IntentsBitField.Flags.Guilds)) {
-      throw new Error(
-        'Guilds intent bitfield is required to use this package!'
-      );
+      throw new Error('GUILDS intent is required to use this package!');
     }
     if (!intents.has(IntentsBitField.Flags.GuildMembers)) {
-      throw new Error(
-        'GuildMembers intent bitfield is required to use this package!'
-      );
+      throw new Error('GUILD_MEMBERS intent is required to use this package!');
     }
-    if (roleOptions.useReactions) {
+    if (options.useReactions) {
       if (!intents.has(IntentsBitField.Flags.GuildMessages)) {
         throw new Error(
-          'GuildMessages intent bitfield is required to use this package!'
+          'GUILD_MESSAGES intent is required to use this package!'
         );
       }
       if (!intents.has(IntentsBitField.Flags.GuildMessageReactions)) {
         throw new Error(
-          'GuildMessageReactions intent bitfield is required to use this package!'
+          'GUILD_MESSAGE_REACTIONS intent is required to use this package!'
         );
       }
     } else {
       if (!intents.has(IntentsBitField.Flags.GuildIntegrations)) {
         throw new Error(
-          'GuildIntegrations intent bitfield is required to use this package!'
+          'GUILD_INTEGRATIONS intent is required to use this package!'
         );
       }
     }
 
     this.client = client;
-    this.options = roleOptions;
+    this.options = options;
     this.channels = new Collection<Snowflake, ChannelOptions>();
 
     if (this.options.useReactions) {
@@ -115,13 +111,16 @@ export class SelfRoleManager extends EventEmitter {
       });
     }
 
-    this.on(SelfRoleManagerEvents.channelRegister, async (channel, options) =>
-      handleRegistering(this, channel, options)
+    this.on(
+      SelfRoleManagerEvents.channelRegister,
+      async (channel, channelOptions) =>
+        handleRegistering(this, channel, channelOptions)
     );
     if (this.options.deleteAfterUnregistration) {
       this.on(
         SelfRoleManagerEvents.channelUnregister,
-        async (channel, options) => handleUnregistering(this, channel, options)
+        async (channel, channelOptions) =>
+          handleUnregistering(this, channel, channelOptions)
       );
     }
   }
