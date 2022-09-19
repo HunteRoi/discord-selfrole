@@ -1,13 +1,13 @@
-const { Client, Intents, Role } = require('discord.js');
+const { Client, Role, IntentsBitField } = require('discord.js');
 const { SelfRoleManager } = require('../lib');
 
 const client = new Client({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MEMBERS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.GUILD_INTEGRATIONS,
+    IntentsBitField.Flags.Guilds,
+    IntentsBitField.Flags.GuildMembers,
+    IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.GuildMessageReactions,
+    IntentsBitField.Flags.GuildIntegrations,
   ],
 });
 const manager = new SelfRoleManager(client, {
