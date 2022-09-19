@@ -18,7 +18,8 @@ See [./example/index.js](example/index.js).
 
 Starting at **v2.0.0**, you must use **NodeJS v16.6.0 or higher** to run a bot with this library.
 
-You also must not forget to include [mandatory intents and partials](#mandatory-intents) as well as give your bot the rights to read messages.
+You also must not forget to include [mandatory intents and partials](#mandatory-intents) as well as give your bot the
+rights to read messages.
 
 ### Mandatory intents
 
@@ -43,32 +44,44 @@ npm install --save @hunteroi/discord-selfrole
 ## Events
 
 ```ts
-manager.on(SelfRoleManagerEvents.channelRegister, (channel, options) => {});
+manager.on(SelfRoleManagerEvents.channelRegister, (channel, options) => {
+});
 
-manager.on(SelfRoleManagerEvents.channelUnregister, (channel, options) => {});
+manager.on(SelfRoleManagerEvents.channelUnregister, (channel, options) => {
+});
 
-manager.on(SelfRoleManagerEvents.error, (error, message) => {}));
+manager.on(SelfRoleManagerEvents.error, (error, message) => {
+});
 
-manager.on(SelfRoleManagerEvents.messageRetrieve, (message) => {});
+manager.on(SelfRoleManagerEvents.messageRetrieve, (message) => {
+});
 
-manager.on(SelfRoleManagerEvents.messageCreate, (message) => {});
+manager.on(SelfRoleManagerEvents.messageCreate, (message) => {
+});
 
-manager.on(SelfRoleManagerEvents.messageDelete, (message) => {});
+manager.on(SelfRoleManagerEvents.messageDelete, (message) => {
+});
 
-manager.on(SelfRoleManagerEvents.roleRemove, (role, member, interaction) => {});
+manager.on(SelfRoleManagerEvents.roleRemove, (role, member, interaction) => {
+});
 
-manager.on(SelfRoleManagerEvents.roleAdd, (role, member, interaction) => {});
+manager.on(SelfRoleManagerEvents.roleAdd, (role, member, interaction) => {
+});
 
-manager.on(SelfRoleManagerEvents.reactionAdd, (rte, message) => {});
+manager.on(SelfRoleManagerEvents.reactionAdd, (rte, message) => {
+});
 
-manager.on(SelfRoleManagerEvents.reactionRemove, (rte, message) => {});
+manager.on(SelfRoleManagerEvents.reactionRemove, (rte, message) => {
+});
 
-manager.on(SelfRoleManagerEvents.maxRolesReach, (member, interaction, nbRoles, maxRoles) => {});
+manager.on(SelfRoleManagerEvents.maxRolesReach, (member, interaction, nbRoles, maxRoles) => {
+});
 ```
 
 ## Contribution
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are greatly appreciated.
+Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any
+contributions you make are greatly appreciated.
 
 1. Fork the Project
 2. Create your Branch: `git checkout -b patch/YourAmazingWork`
