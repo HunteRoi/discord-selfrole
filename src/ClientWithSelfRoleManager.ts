@@ -19,7 +19,7 @@ export class ClientWithSelfRoleManager extends Client {
   public readonly selfRoleManager: SelfRoleManager;
 
   /**
-   *Creates an instance of ClientWithSelfRoleManager.
+   * Creates an instance of ClientWithSelfRoleManager.
    * @param {ClientOptions} [options] Options for the client
    * @param {SelfRoleOptions} [selfRoleOptions={
    *     deleteAfterUnregistration: false

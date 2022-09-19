@@ -1,19 +1,22 @@
 import {
+  ButtonInteraction,
   Client,
   Collection,
-  Intents,
+  IntentsBitField,
   Interaction,
+  RoleResolvable,
   Snowflake,
+  TextChannel,
 } from 'discord.js';
 import EventEmitter from 'events';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
 import { ChannelOptions, SelfRoleOptions } from './types';
 import {
-  handleUnregistering,
-  handleRegistering,
-  handleReaction,
   handleInteraction,
+  handleReaction,
+  handleRegistering,
+  handleUnregistering,
 } from './handlers';
 
 export class SelfRoleManager extends EventEmitter {
@@ -57,26 +60,27 @@ export class SelfRoleManager extends EventEmitter {
   ) {
     super();
 
-    const intents = new Intents(client.options.intents);
-    if (!intents.has(Intents.FLAGS.GUILDS)) {
+    const intents = new IntentsBitField(client.options.intents);
+
+    if (!intents.has(IntentsBitField.Flags.Guilds)) {
       throw new Error('GUILDS intent is required to use this package!');
     }
-    if (!intents.has(Intents.FLAGS.GUILD_MEMBERS)) {
+    if (!intents.has(IntentsBitField.Flags.GuildMembers)) {
       throw new Error('GUILD_MEMBERS intent is required to use this package!');
     }
     if (options.useReactions) {
-      if (!intents.has(Intents.FLAGS.GUILD_MESSAGES)) {
+      if (!intents.has(IntentsBitField.Flags.GuildMessages)) {
         throw new Error(
           'GUILD_MESSAGES intent is required to use this package!'
         );
       }
-      if (!intents.has(Intents.FLAGS.GUILD_MESSAGE_REACTIONS)) {
+      if (!intents.has(IntentsBitField.Flags.GuildMessageReactions)) {
         throw new Error(
           'GUILD_MESSAGE_REACTIONS intent is required to use this package!'
         );
       }
     } else {
-      if (!intents.has(Intents.FLAGS.GUILD_INTEGRATIONS)) {
+      if (!intents.has(IntentsBitField.Flags.GuildIntegrations)) {
         throw new Error(
           'GUILD_INTEGRATIONS intent is required to use this package!'
         );
@@ -107,13 +111,16 @@ export class SelfRoleManager extends EventEmitter {
       });
     }
 
-    this.on(SelfRoleManagerEvents.channelRegister, async (channel, options) =>
-      handleRegistering(this, channel, options)
+    this.on(
+      SelfRoleManagerEvents.channelRegister,
+      async (channel: TextChannel, channelOptions: ChannelOptions) =>
+        handleRegistering(this, channel, channelOptions)
     );
     if (this.options.deleteAfterUnregistration) {
       this.on(
         SelfRoleManagerEvents.channelUnregister,
-        async (channel, options) => handleUnregistering(this, channel, options)
+        async (channel: TextChannel, channelOptions: ChannelOptions) =>
+          handleUnregistering(this, channel, channelOptions)
       );
     }
   }

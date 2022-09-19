@@ -1,11 +1,11 @@
-import { MessageEmbedOptions } from 'discord.js';
+import { EmbedData } from 'discord.js';
 
 /**
  *
  * @export
  * @interface MessageOptions
  */
-export interface MessageOptions extends MessageEmbedOptions {
+export interface MessageOptions extends EmbedData {
   /**
    * Whether the message should be sent as an embed or not.
    *
