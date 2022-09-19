@@ -5,7 +5,8 @@ import {
   Interaction,
   TextChannel,
   RoleResolvable,
-  ButtonInteraction, Snowflake
+  ButtonInteraction,
+  Snowflake,
 } from 'discord.js';
 import EventEmitter from 'events';
 
@@ -62,10 +63,14 @@ export class SelfRoleManager extends EventEmitter {
     const intents = new IntentsBitField(client.options.intents);
 
     if (!intents.has(IntentsBitField.Flags.Guilds)) {
-      throw new Error('Guilds intent bitfield is required to use this package!');
+      throw new Error(
+        'Guilds intent bitfield is required to use this package!'
+      );
     }
     if (!intents.has(IntentsBitField.Flags.GuildMembers)) {
-      throw new Error('GuildMembers intent bitfield is required to use this package!');
+      throw new Error(
+        'GuildMembers intent bitfield is required to use this package!'
+      );
     }
     if (roleOptions.useReactions) {
       if (!intents.has(IntentsBitField.Flags.GuildMessages)) {

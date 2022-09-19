@@ -1,7 +1,8 @@
 import {
   ButtonInteraction,
   Role,
-  GuildMember, ButtonComponent
+  GuildMember,
+  ButtonComponent,
 } from 'discord.js';
 
 import { isNullOrWhiteSpaces } from '../utils/StringUtils';
