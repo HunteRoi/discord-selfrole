@@ -31,8 +31,6 @@ export const handleRegistering = async (
     limit: manager.options.channelsMessagesFetchLimit,
   });
 
-  if (!manager.channels.has(options.channelID)) return;
-
   messages = messages.filter(
     (msg: Message) =>
       msg.author.id === manager.client.user.id &&
@@ -86,8 +84,8 @@ export const handleRegistering = async (
     }
   }
 
-  if (manager.channels.has(options.channelID)) {
-    manager.channels.set(options.channelID, {
+  if (manager.channels.has(channel.id)) {
+    manager.channels.set(channel.id, {
       ...options,
       message: { ...options.message, id },
     });
