@@ -1,5 +1,6 @@
 const { Client, Role, IntentsBitField } = require('discord.js');
 const { SelfRoleManager } = require('../lib');
+const { isNullOrWhiteSpaces } = require('../lib/utils/StringUtils');
 
 const client = new Client({
   intents: [
