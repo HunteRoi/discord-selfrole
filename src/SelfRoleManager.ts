@@ -147,7 +147,6 @@ export class SelfRoleManager extends EventEmitter {
   async registerChannel(channelID: Snowflake, options: ChannelOptions) {
     const channel = await this.client.channels.fetch(channelID);
     if (channel) {
-      options.channelID = channelID;
       this.channels.set(channelID, options);
       this.emit(SelfRoleManagerEvents.channelRegister, channel, options);
     } else {
