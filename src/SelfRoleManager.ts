@@ -20,7 +20,6 @@ import {
   GuildEmoji,
   ReactionEmoji,
   APIMessageComponentEmoji,
-  GuildMemberRoleManager,
   RoleResolvable,
 } from 'discord.js';
 
