@@ -1,9 +1,10 @@
-const { Client, Role, IntentsBitField } = require('discord.js');
+const { Client, Role, IntentsBitField, ButtonInteraction } = require('discord.js');
 const { SelfRoleManager } = require('../lib');
 const { isNullOrWhiteSpaces } = require('../lib/utils/StringUtils');
 
 const client = new Client({
   intents: [
+    IntentsBitField.Flags.MessageContent,
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMembers,
     IntentsBitField.Flags.GuildMessages,
@@ -14,14 +15,13 @@ const client = new Client({
 const manager = new SelfRoleManager(client, {
   deleteAfterUnregistration: true,
   descriptionPrefix: 'This is a prefix!',
-  useReactions: true,
+  useReactions: false,
 });
 
 client.on('ready', async () => {
   await manager.registerChannel('CHANNEL_ID', {
     format: (rte) =>
-      `${rte.emoji} - ${rte.role instanceof Role ? rte.role : rte.name}${
-        !isNullOrWhiteSpaces(rte.smallNote) ? ` (${rte.smallNote})` : ''
+      `${rte.emoji} - ${rte.role instanceof Role ? rte.role : rte.name}${!isNullOrWhiteSpaces(rte.smallNote) ? ` (${rte.smallNote})` : ''
       }`,
     rolesToEmojis: [
       {
@@ -39,6 +39,7 @@ client.on('ready', async () => {
         role: 'ROLE_ID',
         name: 'three',
         removeOnReact: true,
+        smallNote: 'removes on reaction'
       },
     ],
     message: {
@@ -50,9 +51,9 @@ client.on('ready', async () => {
   });
 
   console.log('Connected!');
-
-  //await manager.unregisterChannel('CHANNEL_ID');
 });
+
+client.on('messageCreate', async (message) => message.cleanContent === 'unregisterChannel' && await manager.unregisterChannel('CHANNEL_ID'));
 
 manager.on('channelRegister', (channel, options) =>
   console.log(
@@ -78,16 +79,16 @@ manager.on('messageCreate', (message) =>
 manager.on('messageDelete', (message) =>
   console.log(`Message ${message.id} deleted!`)
 );
-manager.on('roleRemove', async (role, member, interaction) => {
+manager.on('roleRemove', async (role, member, userAction) => {
   console.log(`Role ${role} removed from ${member.displayName}`);
-  await interaction.editReply({
-    content: `The new role ${role} has been added to you.`,
+  userAction instanceof ButtonInteraction && await userAction.editReply({
+    content: `Your old role ${role} has been removed from you.`,
   });
 });
-manager.on('roleAdd', async (role, member, interaction) => {
+manager.on('roleAdd', async (role, member, userAction) => {
   console.log(`Role ${role} given to ${member.displayName}`);
-  await interaction.editReply({
-    content: `Your old role ${role} has been removed from you.`,
+  userAction instanceof ButtonInteraction && await userAction.editReply({
+    content: `The new role ${role} has been added to you.`,
   });
 });
 manager.on('reactionAdd', (rte, message) =>
@@ -96,18 +97,16 @@ manager.on('reactionAdd', (rte, message) =>
 manager.on('reactionRemove', (rte, message) =>
   console.log(`${rte.emoji} removed from ${message.id}`)
 );
-manager.on('maxRolesReach', async (member, interaction, nbRoles, maxRoles) => {
+manager.on('maxRolesReach', async (member, userAction, nbRoles, maxRoles) => {
   console.log(
     `${member.displayName} has reached or exceeded the max roles (${nbRoles}/${maxRoles})!`
   );
-  await interaction.editReply({
+  userAction instanceof ButtonInteraction && await userAction.editReply({
     content: `You reached or exceed the maximum number of roles (${nbRoles}/${maxRoles})!`,
   });
 });
 manager.on('interaction', (rte, interaction) =>
-  console.log(
-    `An interaction has been made by ${interaction.member.displayName}`
-  )
+  console.log(`An interaction has been made by ${interaction.member.displayName}`)
 );
 
 client.login('TOKEN');
