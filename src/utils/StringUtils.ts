@@ -5,6 +5,6 @@
  * @param {string} str
  * @return {boolean}
  */
-export function isNullOrWhiteSpaces(str: string) {
+export function isNullOrWhiteSpaces(str: string): boolean {
   return str === null || str === undefined || str.match(/^ *$/) !== null;
 }

@@ -1,5 +1,5 @@
+import EventEmitter from 'events';
 import {
-  ButtonInteraction,
   Client,
   Collection,
   IntentsBitField,
@@ -7,22 +7,33 @@ import {
   MessageReaction,
   PartialMessageReaction,
   PartialUser,
-  RoleResolvable,
   Snowflake,
   TextChannel,
   User,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  Message,
+  Role,
+  ButtonInteraction,
+  ButtonComponent,
+  GuildEmoji,
+  ReactionEmoji,
+  APIMessageComponentEmoji,
+  RoleResolvable,
 } from 'discord.js';
-import EventEmitter from 'events';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
-import { ChannelOptions, SelfRoleOptions } from './types';
-import {
-  handleInteraction,
-  handleReaction,
-  handleRegistering,
-  handleUnregistering,
-} from './handlers';
+import { ChannelOptions, RoleToEmojiData, SelfRoleOptions } from './types';
+import { isNullOrWhiteSpaces, addRole, removeRole, constructMessageOptions } from './utils';
 
+/**
+ * The manager handling assignation and removal of roles based on user interactions/reactions.
+ *
+ * @export
+ * @class SelfRoleManager
+ * @extends {EventEmitter}
+ */
 export class SelfRoleManager extends EventEmitter {
   /**
    * The options of the manager.
@@ -55,17 +66,10 @@ export class SelfRoleManager extends EventEmitter {
    *     channelsMessagesFetchLimit: 3
    *   }]
    */
-  constructor(
-    client: Client,
-    options: SelfRoleOptions = {
-      deleteAfterUnregistration: false,
-      channelsMessagesFetchLimit: 3,
-    }
-  ) {
+  constructor(client: Client, options: SelfRoleOptions = { deleteAfterUnregistration: false, channelsMessagesFetchLimit: 3 }) {
     super();
 
     const intents = new IntentsBitField(client.options.intents);
-
     if (!intents.has(IntentsBitField.Flags.Guilds)) {
       throw new Error('GUILDS intent is required to use this package!');
     }
@@ -74,20 +78,14 @@ export class SelfRoleManager extends EventEmitter {
     }
     if (options.useReactions) {
       if (!intents.has(IntentsBitField.Flags.GuildMessages)) {
-        throw new Error(
-          'GUILD_MESSAGES intent is required to use this package!'
-        );
+        throw new Error('GUILD_MESSAGES intent is required to use this package!');
       }
       if (!intents.has(IntentsBitField.Flags.GuildMessageReactions)) {
-        throw new Error(
-          'GUILD_MESSAGE_REACTIONS intent is required to use this package!'
-        );
+        throw new Error('GUILD_MESSAGE_REACTIONS intent is required to use this package!');
       }
     } else {
       if (!intents.has(IntentsBitField.Flags.GuildIntegrations)) {
-        throw new Error(
-          'GUILD_INTEGRATIONS intent is required to use this package!'
-        );
+        throw new Error('GUILD_INTEGRATIONS intent is required to use this package!');
       }
     }
 
@@ -96,44 +94,24 @@ export class SelfRoleManager extends EventEmitter {
     this.channels = new Collection<Snowflake, ChannelOptions>();
 
     if (this.options.useReactions) {
-      this.client.on(
-        'messageReactionAdd',
-        async (
-          messageReaction: MessageReaction | PartialMessageReaction,
-          user: User | PartialUser
-        ) => handleReaction(this, messageReaction, user)
+      this.client.on('messageReactionAdd', async (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
+        this.#handleUserAction(messageReaction, user, false)
       );
-      this.client.on(
-        'messageReactionRemove',
-        async (
-          messageReaction: MessageReaction | PartialMessageReaction,
-          user: User | PartialUser
-        ) => handleReaction(this, messageReaction, user, true)
+      this.client.on('messageReactionRemove', async (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
+        this.#handleUserAction(messageReaction, user, true)
       );
     } else {
       this.client.on('interactionCreate', async (interaction: Interaction) => {
         if (interaction.isButton()) {
-          await interaction.deferReply({
-            ephemeral: true,
-            fetchReply: true,
-          });
-
-          await handleInteraction(this, interaction);
+          await interaction.deferReply({ ephemeral: true, fetchReply: true });
+          await this.#handleUserAction(interaction);
         }
       });
     }
 
-    this.on(
-      SelfRoleManagerEvents.channelRegister,
-      async (channel: TextChannel, channelOptions: ChannelOptions) =>
-        handleRegistering(this, channel, channelOptions)
-    );
+    this.on(SelfRoleManagerEvents.channelRegister, async (channel: TextChannel, channelOptions: ChannelOptions) => this.#sendsMessageAndRegisterChannel(channel, channelOptions));
     if (this.options.deleteAfterUnregistration) {
-      this.on(
-        SelfRoleManagerEvents.channelUnregister,
-        async (channel: TextChannel, channelOptions: ChannelOptions) =>
-          handleUnregistering(this, channel, channelOptions)
-      );
+      this.on(SelfRoleManagerEvents.channelUnregister, async (channel: TextChannel, channelOptions: ChannelOptions) => this.#deleteMessageWhenChannelGetsUnregistered(channel, channelOptions));
     }
   }
 
@@ -147,14 +125,9 @@ export class SelfRoleManager extends EventEmitter {
   async registerChannel(channelID: Snowflake, options: ChannelOptions) {
     const channel = await this.client.channels.fetch(channelID);
     if (channel) {
-      this.channels.set(channelID, options);
       this.emit(SelfRoleManagerEvents.channelRegister, channel, options);
     } else {
-      this.emit(
-        SelfRoleManagerEvents.error,
-        null,
-        `There is no channel with the id ${channelID}`
-      );
+      this.emit(SelfRoleManagerEvents.error, null, `There is no channel with the id ${channelID}`);
     }
   }
 
@@ -172,21 +145,135 @@ export class SelfRoleManager extends EventEmitter {
       if (isDeleted) {
         this.emit(SelfRoleManagerEvents.channelUnregister, channel, options);
       } else {
-        this.emit(
-          SelfRoleManagerEvents.error,
-          null,
-          `The channel with the id ${channelID} could not get unregistered`
-        );
+        this.emit(SelfRoleManagerEvents.error, null, `The channel with the id ${channelID} could not get unregistered`);
       }
     } else {
-      this.emit(
-        SelfRoleManagerEvents.error,
-        null,
-        `There is no channel with the id ${channelID}`
-      );
+      this.emit(SelfRoleManagerEvents.error, null, `There is no channel with the id ${channelID}`);
+    }
+  }
+
+  /**
+   * Returns the RTE (and its role) based on the emoji provided.
+   * @param sender the button component or message reaction
+   * @param channelOptions the channel options
+   * @param emoji the emoji clicked
+   * @returns The proper RoteToEmojiData
+   */
+  #getRTE(sender: ButtonInteraction | MessageReaction | PartialMessageReaction, channelOptions: ChannelOptions, emoji: GuildEmoji | ReactionEmoji | APIMessageComponentEmoji): RoleToEmojiData {
+    if (sender instanceof ButtonInteraction) {
+      const button = sender.component as ButtonComponent;
+      if (button.customId) return channelOptions.rolesToEmojis.find((rte: RoleToEmojiData) => rte.role.toString() === button.customId);
+    }
+
+    const emojiIdentifier = isNullOrWhiteSpaces(emoji.id) ? emoji.name : emoji.toString();
+    return channelOptions.rolesToEmojis.find((rte: RoleToEmojiData) => rte.emoji === emojiIdentifier);
+  }
+
+  /**
+   * Handle the registering of a channel, sending the main message for the automated role-giver system.
+   *
+   * @param channel
+   * @param channelOptions
+   */
+  async #sendsMessageAndRegisterChannel(channel: TextChannel, channelOptions: ChannelOptions) {
+    const channelMessages = await channel.messages.fetch({ limit: this.options.channelsMessagesFetchLimit });
+    const selfRoleBotMessages = channelMessages.filter((message: Message) => message.author.id === this.client.user.id && (this.options.useReactions ? message.reactions.cache.size > 0 : message.reactions.cache.size === 0));
+    let message: Message;
+
+    if (selfRoleBotMessages && selfRoleBotMessages.size > 0) {
+      message = selfRoleBotMessages.first();
+      this.emit(SelfRoleManagerEvents.messageRetrieve, message);
+    } else {
+      const buttonComponentRow: ActionRowBuilder<ButtonBuilder> = !this.options.useReactions && new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+          ...channelOptions.rolesToEmojis
+            .slice(0, 5) // a maximum of 5 buttons can be created per action row
+            .map((rte: RoleToEmojiData) =>
+              new ButtonBuilder()
+                .setEmoji(rte.emoji)
+                .setCustomId(rte.role instanceof Role ? rte.role.id : rte.role)
+                .setStyle(ButtonStyle.Secondary)
+            )
+        );
+      const messageOptions = constructMessageOptions(channelOptions, [this.options.descriptionPrefix, this.options.descriptionSuffix], buttonComponentRow);
+      message = await channel.send(messageOptions);
+      this.emit(SelfRoleManagerEvents.messageCreate, message);
+
+      if (this.options.useReactions) {
+        await Promise.all(channelOptions.rolesToEmojis.map((rte) => message.react(rte.emoji)));
+      }
+    }
+
+    if (!this.channels.has(channel.id)) {
+      this.channels.set(channel.id, { ...channelOptions, message: { ...channelOptions.message, id: message.id } });
+    }
+  }
+
+  /**
+   * Handle the unregistering of a channel, deleting the main message inside.
+   *
+   * @param channel
+   * @param options
+   */
+  async #deleteMessageWhenChannelGetsUnregistered(channel: TextChannel, options: ChannelOptions) {
+    const message = options.message.id ? await channel.messages.fetch(options.message.id) : (await channel.messages.fetch()).first();
+
+    if (message) {
+      await message.delete();
+      this.emit(SelfRoleManagerEvents.messageDelete, message);
+    }
+  }
+
+  async #handleUserAction(interaction: ButtonInteraction, user?: null, isReactionRemoval?: null): Promise<void>;
+  async #handleUserAction(messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser, isReactionRemoval: boolean): Promise<void>;
+  async #handleUserAction(userAction: ButtonInteraction | MessageReaction | PartialMessageReaction, user: User | PartialUser, isReactionRemoval: boolean): Promise<void> {
+    const isButtonInteraction = userAction instanceof ButtonInteraction;
+
+    const message = userAction.message;
+    if (message.author.id !== this.client.user.id) return;
+
+    const member = await message.guild.members.fetch(isButtonInteraction ? userAction.member.user.id : user.id);
+    if (member.user.bot) return;
+
+    const channelOptions = this.channels.get(userAction.message.channelId);
+    if (!channelOptions) return;
+
+    const emoji = isButtonInteraction ? userAction.component.emoji : userAction.emoji;
+    const rteData = this.#getRTE(userAction, channelOptions, emoji);
+    if (!rteData) {
+      this.emit(SelfRoleManagerEvents.error, null, 'This emoji cannot be found!');
+      return;
+    }
+
+    const rolesFromEmojis = channelOptions.rolesToEmojis.map((rte: RoleToEmojiData) => rte.role);
+    const memberRoles = [...member.roles.cache.values()].filter((role: Role) => rolesFromEmojis.includes(role.id));
+    const maxRolesReached = channelOptions.maxRolesAssigned && memberRoles.length >= channelOptions.maxRolesAssigned;
+    const memberHasRole = memberRoles.some((role: Role) => rteData.role instanceof Role ? rteData.role === role : rteData.role === role.id);
+
+    if (isButtonInteraction) {
+      this.emit(SelfRoleManagerEvents.interaction, rteData, userAction);
+    } else {
+      this.emit(isReactionRemoval ? SelfRoleManagerEvents.reactionRemove : SelfRoleManagerEvents.reactionAdd, rteData, message);
+    }
+
+    const userWantsToRemoveRole = isButtonInteraction ? memberHasRole : memberHasRole && ((!rteData.removeOnReact && isReactionRemoval) || (rteData.removeOnReact && !isReactionRemoval));
+    const userWantsToAddRole = isButtonInteraction ? !memberHasRole : !memberHasRole && ((!rteData.removeOnReact && !isReactionRemoval) || (rteData.removeOnReact && isReactionRemoval));
+    switch (true) {
+      case userWantsToAddRole && maxRolesReached:
+        this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberRoles.length, channelOptions.maxRolesAssigned);
+        break;
+      case userWantsToAddRole:
+        await addRole(member, rteData.role);
+        this.emit(SelfRoleManagerEvents.roleAdd, rteData.role, member, userAction);
+        break;
+      case userWantsToRemoveRole:
+        await removeRole(member, rteData.role);
+        this.emit(SelfRoleManagerEvents.roleRemove, rteData.role, member, userAction);
+        break;
     }
   }
 }
+
 
 /**
  * Emitted when a channel is registered.
@@ -244,9 +331,9 @@ export class SelfRoleManager extends EventEmitter {
  * @event SelfRoleManager#roleRemove
  * @param {RoleResolvable} role
  * @param {GuildMember} member
- * @param {ButtonInteraction} interaction
+ * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
  * @example
- * manager.on(SelfRoleManagerEvents.roleRemove, (role, member, interaction) => {});
+ * manager.on(SelfRoleManagerEvents.roleRemove, (role, member, userAction) => {});
  */
 
 /**
@@ -254,9 +341,9 @@ export class SelfRoleManager extends EventEmitter {
  * @event SelfRoleManager#roleAdd
  * @param {RoleResolvable} role
  * @param {GuildMember} member
- * @param {ButtonInteraction} interaction
+ * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
  * @example
- * manager.on(SelfRoleManagerEvents.roleAdd, (role, member, interaction) => {});
+ * manager.on(SelfRoleManagerEvents.roleAdd, (role, member, userAction) => {});
  */
 
 /**
@@ -281,11 +368,11 @@ export class SelfRoleManager extends EventEmitter {
  * Emitted when the maximum of roles is reached for the member.
  * @event SelfRoleManager#maxRolesReach
  * @param {GuildMember} member
- * @param {ButtonInteraction | null} interaction
+ * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
  * @param {number | null} nbRoles
  * @param {number | null} maximumRoles
  * @example
- * manager.on(SelfRoleManagerEvents.maxRolesReach, (member, interaction, nbRoles, maximumRoles) => {});
+ * manager.on(SelfRoleManagerEvents.maxRolesReach, (member, userAction, nbRoles, maximumRoles) => {});
  */
 
 /**
