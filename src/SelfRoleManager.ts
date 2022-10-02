@@ -184,16 +184,17 @@ export class SelfRoleManager extends EventEmitter {
       message = selfRoleBotMessages.first();
       this.emit(SelfRoleManagerEvents.messageRetrieve, message);
     } else {
-      const buttonComponentRow: ActionRowBuilder<ButtonBuilder> = !this.options.useReactions && new ActionRowBuilder<ButtonBuilder>().addComponents(
-        ...channelOptions.rolesToEmojis
-          .slice(0, 5) // a maximum of 5 buttons can be created per action row
-          .map((rte: RoleToEmojiData) =>
-            new ButtonBuilder()
-              .setEmoji(rte.emoji)
-              .setCustomId(rte.role instanceof Role ? rte.role.id : rte.role)
-              .setStyle(ButtonStyle.Secondary)
-          )
-      );
+      const buttonComponentRow: ActionRowBuilder<ButtonBuilder> = !this.options.useReactions && new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+          ...channelOptions.rolesToEmojis
+            .slice(0, 5) // a maximum of 5 buttons can be created per action row
+            .map((rte: RoleToEmojiData) =>
+              new ButtonBuilder()
+                .setEmoji(rte.emoji)
+                .setCustomId(rte.role instanceof Role ? rte.role.id : rte.role)
+                .setStyle(ButtonStyle.Secondary)
+            )
+        );
       const messageOptions = constructMessageOptions(channelOptions, [this.options.descriptionPrefix, this.options.descriptionSuffix], buttonComponentRow);
       message = await channel.send(messageOptions);
       this.emit(SelfRoleManagerEvents.messageCreate, message);
