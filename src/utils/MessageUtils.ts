@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, MessageOptions } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, MessageCreateOptions } from 'discord.js';
 
 import { isNullOrWhiteSpaces } from './StringUtils';
 import { ChannelOptions, RoleToEmojiData } from '../types';
@@ -12,7 +12,7 @@ import { ChannelOptions, RoleToEmojiData } from '../types';
  * @param {ActionRowBuilder<ButtonBuilder>} [actionRowBuilder] The potential action row builder
  * @return {*}  {MessageOptions}
  */
-export function constructMessageOptions(channelOptions: ChannelOptions, [descriptionPrefix, descriptionSuffix]: string[], actionRowBuilder?: ActionRowBuilder<ButtonBuilder>): MessageOptions {
+export function constructMessageOptions(channelOptions: ChannelOptions, [descriptionPrefix, descriptionSuffix]: string[], actionRowBuilder?: ActionRowBuilder<ButtonBuilder>): MessageCreateOptions {
   const content = generateContent(channelOptions, descriptionPrefix, descriptionSuffix);
   return buildMessage(content, actionRowBuilder);
 }
@@ -24,7 +24,7 @@ export function constructMessageOptions(channelOptions: ChannelOptions, [descrip
    * @param actionRowBuilder The button to add to the message, if applicable
    * @returns The message to send
    */
-function buildMessage(content: string | EmbedBuilder, actionRowBuilder?: ActionRowBuilder<ButtonBuilder>): MessageOptions {
+function buildMessage(content: string | EmbedBuilder, actionRowBuilder?: ActionRowBuilder<ButtonBuilder>): MessageCreateOptions {
   return {
     components: actionRowBuilder ? [actionRowBuilder] : [],
     embeds: (content instanceof EmbedBuilder ? [content] : []),
