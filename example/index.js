@@ -1,6 +1,5 @@
 const { Client, Role, IntentsBitField, ButtonInteraction } = require('discord.js');
 const { SelfRoleManager } = require('../lib');
-const { isNullOrWhiteSpaces } = require('../lib/utils/StringUtils');
 
 const client = new Client({
   intents: [
@@ -8,8 +7,7 @@ const client = new Client({
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMembers,
     IntentsBitField.Flags.GuildMessages,
-    IntentsBitField.Flags.GuildMessageReactions,
-    IntentsBitField.Flags.GuildIntegrations,
+    IntentsBitField.Flags.GuildMessageReactions
   ],
 });
 const manager = new SelfRoleManager(client, {
@@ -21,8 +19,7 @@ const manager = new SelfRoleManager(client, {
 client.on('ready', async () => {
   await manager.registerChannel('CHANNEL_ID', {
     format: (rte) =>
-      `${rte.emoji} - ${rte.role instanceof Role ? rte.role : rte.name}${!isNullOrWhiteSpaces(rte.smallNote) ? ` (${rte.smallNote})` : ''
-      }`,
+      `${rte.emoji} - ${rte.role instanceof Role ? rte.role : rte.name}${rte.smallNote ? ` (${rte.smallNote})` : ''}`,
     rolesToEmojis: [
       {
         emoji: '1️⃣',
