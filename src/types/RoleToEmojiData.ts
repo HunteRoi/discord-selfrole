@@ -22,13 +22,6 @@ export interface RoleToEmojiData {
   role: RoleResolvable;
 
   /**
-   * The name given to the role.
-   *
-   * @type {string}
-   */
-  name: string;
-
-  /**
    * A short memo to append to the role-emoji pair.
    *
    * @type {string}

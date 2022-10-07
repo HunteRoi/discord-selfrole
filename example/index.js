@@ -1,4 +1,4 @@
-const { Client, Role, IntentsBitField, ButtonInteraction } = require('discord.js');
+const { Client, Role, IntentsBitField, ButtonInteraction, roleMention } = require('discord.js');
 const { SelfRoleManager } = require('../lib');
 
 const client = new Client({
@@ -19,22 +19,19 @@ const manager = new SelfRoleManager(client, {
 client.on('ready', async () => {
   await manager.registerChannel('CHANNEL_ID', {
     format: (rte) =>
-      `${rte.emoji} - ${rte.role instanceof Role ? rte.role : rte.name}${rte.smallNote ? ` (${rte.smallNote})` : ''}`,
+      `${rte.emoji} - ${rte.role instanceof Role ? rte.role : roleMention(rte.role)}${rte.smallNote ? ` (${rte.smallNote})` : ''}`,
     rolesToEmojis: [
       {
         emoji: '1️⃣',
         role: 'ROLE_ID',
-        name: 'one',
       },
       {
         emoji: '2️⃣',
         role: 'ROLE_ID',
-        name: 'two',
       },
       {
         emoji: '3️⃣',
         role: 'ROLE_ID',
-        name: 'three',
         removeOnReact: true,
         smallNote: 'removes on reaction'
       },
