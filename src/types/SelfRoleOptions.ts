@@ -12,20 +12,6 @@ export interface SelfRoleOptions {
   deleteAfterUnregistration: boolean;
 
   /**
-   * The description suffix added to each message.
-   *
-   * @type {string}
-   */
-  descriptionSuffix?: string;
-
-  /**
-   * The description prefix added to each message.
-   *
-   * @type {string}
-   */
-  descriptionPrefix?: string;
-
-  /**
    * The maximum channel's messages to fetch.
    *
    * @type {number}

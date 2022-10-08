@@ -19,8 +19,7 @@ import {
   ButtonComponent,
   GuildEmoji,
   ReactionEmoji,
-  APIMessageComponentEmoji,
-  RoleResolvable,
+  APIMessageComponentEmoji
 } from 'discord.js';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
@@ -82,10 +81,6 @@ export class SelfRoleManager extends EventEmitter {
       }
       if (!intents.has(IntentsBitField.Flags.GuildMessageReactions)) {
         throw new Error('GUILD_MESSAGE_REACTIONS intent is required to use this package!');
-      }
-    } else {
-      if (!intents.has(IntentsBitField.Flags.GuildIntegrations)) {
-        throw new Error('GUILD_INTEGRATIONS intent is required to use this package!');
       }
     }
 
@@ -195,7 +190,7 @@ export class SelfRoleManager extends EventEmitter {
                 .setStyle(ButtonStyle.Secondary)
             )
         );
-      const messageOptions = constructMessageOptions(channelOptions, [this.options.descriptionPrefix, this.options.descriptionSuffix], buttonComponentRow);
+      const messageOptions = constructMessageOptions(channelOptions, buttonComponentRow);
       message = await channel.send(messageOptions);
       this.emit(SelfRoleManagerEvents.messageCreate, message);
 

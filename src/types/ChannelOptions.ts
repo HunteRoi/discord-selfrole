@@ -43,11 +43,4 @@ export interface ChannelOptions {
    * @type {number}
    */
   maxRolesAssigned?: number;
-
-  /**
-   * A description resolver method for a role-emoji pair.
-   *
-   * @memberof MessageOptions
-   */
-  format: (rte: RoleToEmojiData) => string;
 }

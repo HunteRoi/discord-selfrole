@@ -1,4 +1,4 @@
-const { Client, Role, IntentsBitField, ButtonInteraction, roleMention } = require('discord.js');
+const { Client, Role, IntentsBitField, ButtonInteraction, roleMention, formatEmoji, parseEmoji } = require('discord.js');
 const { SelfRoleManager } = require('../lib');
 
 const client = new Client({
@@ -12,14 +12,11 @@ const client = new Client({
 });
 const manager = new SelfRoleManager(client, {
   deleteAfterUnregistration: true,
-  descriptionPrefix: 'This is a prefix!',
-  useReactions: false,
+  useReactions: false
 });
 
 client.on('ready', async () => {
   await manager.registerChannel('CHANNEL_ID', {
-    format: (rte) =>
-      `${rte.emoji} - ${rte.role instanceof Role ? rte.role : roleMention(rte.role)}${rte.smallNote ? ` (${rte.smallNote})` : ''}`,
     rolesToEmojis: [
       {
         emoji: '1️⃣',
@@ -35,10 +32,18 @@ client.on('ready', async () => {
         removeOnReact: true,
         smallNote: 'removes on reaction'
       },
+      {
+        emoji: '<:EMOJI_NAME:EMOJI_ID>',
+        role: 'ROLE_ID'
+      }
     ],
     message: {
       options: {
+        descriptionPrefix: 'This is a prefix!',
         sendAsEmbed: true,
+        format: (rte) => {
+          return `${rte.emoji} - ${rte.role instanceof Role ? rte.role : roleMention(rte.role)}${rte.smallNote ? ` (${rte.smallNote})` : ''}`;
+        },
       },
     },
     maxRolesAssigned: 1,

@@ -1,5 +1,7 @@
 import { EmbedData } from 'discord.js';
 
+import { RoleToEmojiData } from './RoleToEmojiData';
+
 /**
  *
  * @export
@@ -12,4 +14,25 @@ export interface MessageOptions extends EmbedData {
    * @type {boolean}
    */
   sendAsEmbed: boolean;
+
+  /**
+   * The description suffix added to each message.
+   *
+   * @type {string}
+   */
+  descriptionSuffix?: string;
+
+  /**
+   * The description prefix added to each message.
+   *
+   * @type {string}
+   */
+  descriptionPrefix?: string;
+
+  /**
+   * A description resolver method for a role-emoji pair.
+   *
+   * @memberof MessageOptions
+   */
+  format: (rte: RoleToEmojiData) => string;
 }

@@ -1,4 +1,4 @@
-import { EmojiResolvable, RoleResolvable } from 'discord.js';
+import { EmojiIdentifierResolvable, RoleResolvable } from 'discord.js';
 
 /**
  * A mapping class to link a role and an emoji altogether.
@@ -10,9 +10,9 @@ export interface RoleToEmojiData {
   /**
    * The emoji linked to the role.
    *
-   * @type {EmojiResolvable}
+   * @type {EmojiIdentifierResolvable}
    */
-  emoji: EmojiResolvable;
+  emoji: EmojiIdentifierResolvable;
 
   /**
    * The role related to the emoji.
