@@ -253,17 +253,18 @@ export class SelfRoleManager extends EventEmitter {
 
     const userWantsToRemoveRole = isButtonInteraction ? memberHasRole : memberHasRole && ((!rteData.removeOnReact && isReactionRemoval) || (rteData.removeOnReact && !isReactionRemoval));
     const userWantsToAddRole = isButtonInteraction ? !memberHasRole : !memberHasRole && ((!rteData.removeOnReact && !isReactionRemoval) || (rteData.removeOnReact && isReactionRemoval));
+    const role: Role = rteData.role instanceof Role ? rteData.role : await userAction.message.guild.roles.fetch(rteData.role);
     switch (true) {
       case userWantsToAddRole && maxRolesReached:
         this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberRoles.length, channelOptions.maxRolesAssigned);
         break;
       case userWantsToAddRole:
-        await addRole(member, rteData.role);
-        this.emit(SelfRoleManagerEvents.roleAdd, rteData.role, member, userAction);
+        await addRole(member, role);
+        this.emit(SelfRoleManagerEvents.roleAdd, role, member, userAction);
         break;
       case userWantsToRemoveRole:
-        await removeRole(member, rteData.role);
-        this.emit(SelfRoleManagerEvents.roleRemove, rteData.role, member, userAction);
+        await removeRole(member, role);
+        this.emit(SelfRoleManagerEvents.roleRemove, role, member, userAction);
         break;
     }
   }
