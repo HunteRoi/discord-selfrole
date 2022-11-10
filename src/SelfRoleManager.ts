@@ -19,7 +19,8 @@ import {
   ButtonComponent,
   GuildEmoji,
   ReactionEmoji,
-  APIMessageComponentEmoji
+  APIMessageComponentEmoji,
+  GuildMember
 } from 'discord.js';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
@@ -254,17 +255,20 @@ export class SelfRoleManager extends EventEmitter {
     const userWantsToRemoveRole = isButtonInteraction ? memberHasRole : memberHasRole && ((!rteData.removeOnReact && isReactionRemoval) || (rteData.removeOnReact && !isReactionRemoval));
     const userWantsToAddRole = isButtonInteraction ? !memberHasRole : !memberHasRole && ((!rteData.removeOnReact && !isReactionRemoval) || (rteData.removeOnReact && isReactionRemoval));
     const role: Role = rteData.role instanceof Role ? rteData.role : await userAction.message.guild.roles.fetch(rteData.role);
+    let updatedMember: GuildMember;
     switch (true) {
       case userWantsToAddRole && maxRolesReached:
         this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberRoles.length, channelOptions.maxRolesAssigned);
         break;
       case userWantsToAddRole:
-        await addRole(member, role);
-        this.emit(SelfRoleManagerEvents.roleAdd, role, member, userAction);
+        updatedMember = await addRole(member, role);
+        if (updatedMember !== null) this.emit(SelfRoleManagerEvents.roleAdd, role, updatedMember, userAction);
+        else this.emit(SelfRoleManagerEvents.error, null, `The role ${role.name} could not be added to ${member.nickname}`, [role, member]);
         break;
       case userWantsToRemoveRole:
-        await removeRole(member, role);
-        this.emit(SelfRoleManagerEvents.roleRemove, role, member, userAction);
+        updatedMember = await removeRole(member, role);
+        if (updatedMember !== null) this.emit(SelfRoleManagerEvents.roleRemove, role, updatedMember, userAction);
+        else this.emit(SelfRoleManagerEvents.error, null, `The role ${role.name} could not be added to ${member.nickname}`, [role, member]);
         break;
     }
   }
@@ -294,8 +298,9 @@ export class SelfRoleManager extends EventEmitter {
  * @event SelfRoleManager#error
  * @param {Error} error The error object
  * @param {string} message The message of the error
+ * @param {[Role, GuildMember]} args The possible arguments in case of error when adding/removing a role.
  * @example
- * manager.on(SelfRoleManagerEvents.error, (error, message) => {});
+ * manager.on(SelfRoleManagerEvents.error, (error, message, args) => {});
  */
 
 /**

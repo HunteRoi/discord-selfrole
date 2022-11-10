@@ -44,38 +44,27 @@ npm install --save @hunteroi/discord-selfrole
 ## Events
 
 ```ts
-manager.on(SelfRoleManagerEvents.channelRegister, (channel, options) => {
-});
+manager.on(SelfRoleManagerEvents.channelRegister, (channel, options) => {});
 
-manager.on(SelfRoleManagerEvents.channelUnregister, (channel, options) => {
-});
+manager.on(SelfRoleManagerEvents.channelUnregister, (channel, options) => {});
 
-manager.on(SelfRoleManagerEvents.error, (error, message) => {
-});
+manager.on(SelfRoleManagerEvents.error, (error, message, [role, member]) => {});
 
-manager.on(SelfRoleManagerEvents.messageRetrieve, (message) => {
-});
+manager.on(SelfRoleManagerEvents.messageRetrieve, (message) => {});
 
-manager.on(SelfRoleManagerEvents.messageCreate, (message) => {
-});
+manager.on(SelfRoleManagerEvents.messageCreate, (message) => {});
 
-manager.on(SelfRoleManagerEvents.messageDelete, (message) => {
-});
+manager.on(SelfRoleManagerEvents.messageDelete, (message) => {});
 
-manager.on(SelfRoleManagerEvents.roleRemove, (role, member, interaction) => {
-});
+manager.on(SelfRoleManagerEvents.roleRemove, (role, member, interaction) => {});
 
-manager.on(SelfRoleManagerEvents.roleAdd, (role, member, interaction) => {
-});
+manager.on(SelfRoleManagerEvents.roleAdd, (role, member, interaction) => {});
 
-manager.on(SelfRoleManagerEvents.reactionAdd, (rte, message) => {
-});
+manager.on(SelfRoleManagerEvents.reactionAdd, (rte, message) => {});
 
-manager.on(SelfRoleManagerEvents.reactionRemove, (rte, message) => {
-});
+manager.on(SelfRoleManagerEvents.reactionRemove, (rte, message) => {});
 
-manager.on(SelfRoleManagerEvents.maxRolesReach, (member, interaction, nbRoles, maxRoles) => {
-});
+manager.on(SelfRoleManagerEvents.maxRolesReach, (member, interaction, nbRoles, maxRoles) => {});
 ```
 
 ## Contribution

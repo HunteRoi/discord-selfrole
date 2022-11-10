@@ -1,4 +1,4 @@
-const { Client, Role, IntentsBitField, ButtonInteraction, roleMention, formatEmoji, parseEmoji } = require('discord.js');
+const { Client, Role, IntentsBitField, ButtonInteraction, roleMention } = require('discord.js');
 const { SelfRoleManager } = require('../lib');
 
 const client = new Client({

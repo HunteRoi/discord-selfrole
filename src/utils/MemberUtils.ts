@@ -10,7 +10,7 @@ async function removeRole(
   member: GuildMember,
   role: RoleResolvable
 ): Promise<GuildMember | null> {
-  const roleId = role instanceof Role ? role.toString() : role;
+  const roleId = role instanceof Role ? role.id : role;
   if (member.roles.cache.has(roleId)) return member.roles.remove(role);
   return null;
 }
@@ -25,7 +25,7 @@ async function addRole(
   member: GuildMember,
   role: RoleResolvable
 ): Promise<GuildMember | null> {
-  const roleId = role instanceof Role ? role.toString() : role;
+  const roleId = role instanceof Role ? role.id : role;
   if (!member.roles.cache.has(roleId)) return member.roles.add(role);
   return null;
 }
