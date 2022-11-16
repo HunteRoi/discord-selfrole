@@ -21,7 +21,8 @@ import {
   ReactionEmoji,
   APIMessageComponentEmoji,
   GuildMember,
-  RoleResolvable
+  RoleResolvable,
+  Events
 } from 'discord.js';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
@@ -122,6 +123,7 @@ export class SelfRoleManager extends EventEmitter {
   async registerChannel(channelID: Snowflake, options: ChannelOptions) {
     const channel = await this.client.channels.fetch(channelID);
     if (channel) {
+      this.#listenRoleChanges(options.rolesToEmojis);
       this.emit(SelfRoleManagerEvents.channelRegister, channel, options);
     } else {
       this.emit(SelfRoleManagerEvents.error, null, `There is no channel with the id ${channelID}`);
@@ -278,6 +280,25 @@ export class SelfRoleManager extends EventEmitter {
         else this.emit(SelfRoleManagerEvents.error, null, `The role ${role.name} could not be added to ${member.nickname}`, [role, member]);
         break;
     }
+  }
+
+  #listenRoleChanges(rolesToEmojis: RoleToEmojiData[]) {
+    this.client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
+      const rolesToRemove = rolesToEmojis.filter(
+        (rte) =>
+          rte.dependencies?.some((dep) => {
+            const role = dep instanceof Role ? dep.id : dep;
+            return oldMember.roles.cache.has(role) && !newMember.roles.cache.has(role);
+          }) ?? false
+      );
+      for (const { role } of rolesToRemove) {
+        const roleToRemove = role instanceof Role ? role.id : role;
+        if (newMember.roles.cache.has(roleToRemove)) {
+          await removeRole(newMember, roleToRemove);
+          this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember);
+        }
+      }
+    });
   }
 }
 
