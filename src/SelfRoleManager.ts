@@ -292,17 +292,15 @@ export class SelfRoleManager extends EventEmitter {
         (rte) =>
           rte.requiredRoles?.some((dep) => {
             const role = dep instanceof Role ? dep.id : dep;
-            return oldMember.roles.cache.has(role) && !newMember.roles.cache.has(role);
+            return oldMember.roles.resolve(role) && !newMember.roles.resolve(role);
           }) ?? false
       );
       for (const { role } of rolesToRemove) {
         const roleToRemove = role instanceof Role ? role.id : role;
-        if (newMember.roles.cache.has(roleToRemove)) {
           const user = await removeRole(newMember, roleToRemove);
           if (user) {
             this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember);
           }
-        }
       }
     });
   }
