@@ -259,7 +259,7 @@ export class SelfRoleManager extends EventEmitter {
     const userWantsToRemoveRole = isButtonInteraction ? memberHasRole : memberHasRole && ((!rteData.removeOnReact && isReactionRemoval) || (rteData.removeOnReact && !isReactionRemoval));
     const userWantsToAddRole = isButtonInteraction ? !memberHasRole : !memberHasRole && ((!rteData.removeOnReact && !isReactionRemoval) || (rteData.removeOnReact && isReactionRemoval));
     const role: Role = rteData.role instanceof Role ? rteData.role : await userAction.message.guild.roles.fetch(rteData.role);
-    const userNotMetDependencies = rteData.dependencies?.some((role: RoleResolvable) => memberRoles.find((memberRole: Role) => (role instanceof Role ? role === memberRole : role === memberRole.id)) === undefined) ?? false;
+    const userNotMetDependencies = rteData.requiredRoles?.some((role: RoleResolvable) => memberRoles.find((memberRole: Role) => (role instanceof Role ? role === memberRole : role === memberRole.id)) === undefined) ?? false;
 
     let updatedMember: GuildMember;
     switch (true) {
@@ -267,7 +267,7 @@ export class SelfRoleManager extends EventEmitter {
         this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberManagedRoles.length, channelOptions.maxRolesAssigned);
         break;
       case userWantsToAddRole && userNotMetDependencies:
-        this.emit(SelfRoleManagerEvents.notMetDependencies, userAction, member, role, rteData.dependencies);
+        this.emit(SelfRoleManagerEvents.conditionsNotMet, member, userAction, role, rteData.requiredRoles);
         break;
       case userWantsToAddRole:
         updatedMember = await addRole(member, role);
@@ -286,7 +286,7 @@ export class SelfRoleManager extends EventEmitter {
     this.client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
       const rolesToRemove = rolesToEmojis.filter(
         (rte) =>
-          rte.dependencies?.some((dep) => {
+          rte.requiredRoles?.some((dep) => {
             const role = dep instanceof Role ? dep.id : dep;
             return oldMember.roles.cache.has(role) && !newMember.roles.cache.has(role);
           }) ?? false
@@ -411,4 +411,15 @@ export class SelfRoleManager extends EventEmitter {
  * @param {ButtonInteraction} interaction
  * @example
  * manager.on(SelfRoleManagerEvents.interaction, (rte, interaction) => {});
+ */
+
+/**
+ * Emitted when the user wants a role but does not have the required roles to apply for it.
+ * @event SelfRoleManager#conditionsNotMet
+ * @param {GuildMember} member
+ * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
+ * @param {Role} role the role to add
+ * @param {RoleResolvable[]} requiredRoles the required roles to pass the conditions
+ * @example
+ * manager.on(SelfRoleManagerEvents.conditionsNotMet, (member, userAction, role, requiredRoles) => {});
  */

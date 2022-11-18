@@ -43,5 +43,5 @@ export interface RoleToEmojiData {
    * @type {RoleResolvable[]}
    * @memberof RoleToEmojiData
    */
-  dependencies?: RoleResolvable[];
+  requiredRoles?: RoleResolvable[];
 }
