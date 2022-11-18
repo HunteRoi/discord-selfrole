@@ -294,8 +294,10 @@ export class SelfRoleManager extends EventEmitter {
       for (const { role } of rolesToRemove) {
         const roleToRemove = role instanceof Role ? role.id : role;
         if (newMember.roles.cache.has(roleToRemove)) {
-          await removeRole(newMember, roleToRemove);
-          this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember);
+          const user = await removeRole(newMember, roleToRemove);
+          if (user) {
+            this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember);
+          }
         }
       }
     });
