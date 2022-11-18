@@ -259,14 +259,18 @@ export class SelfRoleManager extends EventEmitter {
     const userWantsToRemoveRole = isButtonInteraction ? memberHasRole : memberHasRole && ((!rteData.removeOnReact && isReactionRemoval) || (rteData.removeOnReact && !isReactionRemoval));
     const userWantsToAddRole = isButtonInteraction ? !memberHasRole : !memberHasRole && ((!rteData.removeOnReact && !isReactionRemoval) || (rteData.removeOnReact && isReactionRemoval));
     const role: Role = rteData.role instanceof Role ? rteData.role : await userAction.message.guild.roles.fetch(rteData.role);
-    const userNotMetDependencies = rteData.requiredRoles?.some((role: RoleResolvable) => memberRoles.find((memberRole: Role) => (role instanceof Role ? role === memberRole : role === memberRole.id)) === undefined) ?? false;
+    const userMeetsConditions = rteData.requiredRoles
+      ?.every(role => role instanceof Role
+        ? memberRoles.includes(role)
+        : memberRoles.map(r => r.id).includes(role)
+      ) ?? true;
 
     let updatedMember: GuildMember;
     switch (true) {
       case userWantsToAddRole && maxRolesReached:
         this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberManagedRoles.length, channelOptions.maxRolesAssigned);
         break;
-      case userWantsToAddRole && userNotMetDependencies:
+      case userWantsToAddRole && !userMeetsConditions:
         this.emit(SelfRoleManagerEvents.conditionsNotMet, member, userAction, role, rteData.requiredRoles);
         break;
       case userWantsToAddRole:
