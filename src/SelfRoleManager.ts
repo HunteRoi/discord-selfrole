@@ -28,6 +28,7 @@ import {
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
 import { ChannelOptions, RoleToEmojiData, SelfRoleOptions } from './types';
 import { isNullOrWhiteSpaces, addRole, removeRole, constructMessageOptions } from './utils';
+import type { UserAction } from './types/UserAction';
 
 /**
  * The manager handling assignation and removal of roles based on user interactions/reactions.
@@ -299,7 +300,7 @@ export class SelfRoleManager extends EventEmitter {
         const roleToRemove = role instanceof Role ? role.id : role;
           const user = await removeRole(newMember, roleToRemove);
           if (user) {
-            this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember);
+            this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember, null);
           }
       }
     });
@@ -364,7 +365,7 @@ export class SelfRoleManager extends EventEmitter {
  * @event SelfRoleManager#roleRemove
  * @param {RoleResolvable} role
  * @param {GuildMember} member
- * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
+ * @param {UserAction} userAction
  * @example
  * manager.on(SelfRoleManagerEvents.roleRemove, (role, member, userAction) => {});
  */
@@ -374,7 +375,7 @@ export class SelfRoleManager extends EventEmitter {
  * @event SelfRoleManager#roleAdd
  * @param {RoleResolvable} role
  * @param {GuildMember} member
- * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
+ * @param {UserAction} userAction
  * @example
  * manager.on(SelfRoleManagerEvents.roleAdd, (role, member, userAction) => {});
  */
@@ -401,7 +402,7 @@ export class SelfRoleManager extends EventEmitter {
  * Emitted when the maximum of roles is reached for the member.
  * @event SelfRoleManager#maxRolesReach
  * @param {GuildMember} member
- * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
+ * @param {UserAction} userAction
  * @param {number | null} nbRoles
  * @param {number | null} maximumRoles
  * @example
@@ -421,7 +422,7 @@ export class SelfRoleManager extends EventEmitter {
  * Emitted when the user wants a role but does not have the required roles to apply for it.
  * @event SelfRoleManager#conditionsNotMet
  * @param {GuildMember} member
- * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
+ * @param {UserAction} userAction
  * @param {Role} role the role to add
  * @param {RoleResolvable[]} requiredRoles the required roles to pass the conditions
  * @example
