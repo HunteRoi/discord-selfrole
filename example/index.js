@@ -35,7 +35,7 @@ client.on('ready', async () => {
       {
         emoji: '<:EMOJI_NAME:EMOJI_ID>',
         role: 'ROLE_ID',
-        requiredRole: ['OTHER_ROLE_ID'],
+        requiredRoles: ['OTHER_ROLE_ID'],
       }
     ],
     message: {
