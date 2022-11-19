@@ -111,13 +111,13 @@ manager.on('maxRolesReach', async (member, userAction, nbRoles, maxRoles) => {
 manager.on('interaction', (rte, interaction) =>
   console.log(`An interaction has been made by ${interaction.member.displayName}`)
 );
-manager.on('conditionsNotMet', async (member,
+manager.on('requiredRolesMissing', async (member,
   userAction,
   role,
   dependencies) => {
-  console.log(`${member.displayName} doesn't have the required dependencies to get the role ${role}!`, dependencies);
+  console.log(`${member.displayName} doesn't have the required roles to get the role ${role}!`, dependencies);
   userAction instanceof ButtonInteraction && await userAction.editReply({
-    content: `${member.displayName} doesn't have the required dependencies to get the role ${role}!`
+    content: `${member.displayName} doesn't have the required roles to get the role ${role}!`
   });
 });
 

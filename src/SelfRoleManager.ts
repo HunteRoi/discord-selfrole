@@ -272,7 +272,7 @@ export class SelfRoleManager extends EventEmitter {
         this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberManagedRoles.length, channelOptions.maxRolesAssigned);
         break;
       case userWantsToAddRole && !userMeetsConditions:
-        this.emit(SelfRoleManagerEvents.conditionsNotMet, member, userAction, role, rteData.requiredRoles);
+        this.emit(SelfRoleManagerEvents.requiredRolesMissing, member, userAction, role, rteData.requiredRoles);
         break;
       case userWantsToAddRole:
         updatedMember = await addRole(member, role);
@@ -420,11 +420,11 @@ export class SelfRoleManager extends EventEmitter {
 
 /**
  * Emitted when the user wants a role but does not have the required roles to apply for it.
- * @event SelfRoleManager#conditionsNotMet
+ * @event SelfRoleManager#requiredRolesMissing
  * @param {GuildMember} member
  * @param {UserAction} userAction
  * @param {Role} role the role to add
  * @param {RoleResolvable[]} requiredRoles the required roles to pass the conditions
  * @example
- * manager.on(SelfRoleManagerEvents.conditionsNotMet, (member, userAction, role, requiredRoles) => {});
+ * manager.on(SelfRoleManagerEvents.requiredRolesMissing, (member, userAction, role, requiredRoles) => {});
  */
