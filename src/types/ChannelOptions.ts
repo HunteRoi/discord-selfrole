@@ -1,4 +1,4 @@
-import { Snowflake } from 'discord.js';
+import { Awaitable, GuildMember, PartialGuildMember, Snowflake } from 'discord.js';
 
 import { MessageOptions } from './MessageOptions';
 import { RoleToEmojiData } from './RoleToEmojiData';
@@ -43,4 +43,12 @@ export interface ChannelOptions {
    * @type {number}
    */
   maxRolesAssigned?: number;
+
+  /**
+   * Private member to store the function for event listener `GuildMemberUpdate`.
+   *
+   * @private
+   * @type {Function}
+   */
+  readonly _rolesChangesListener: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => Awaitable<void>;
 }

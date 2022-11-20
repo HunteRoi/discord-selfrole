@@ -21,7 +21,8 @@ import {
   ReactionEmoji,
   APIMessageComponentEmoji,
   GuildMember,
-  Events
+  Events,
+  PartialGuildMember
 } from 'discord.js';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
@@ -123,7 +124,6 @@ export class SelfRoleManager extends EventEmitter {
   async registerChannel(channelID: Snowflake, options: ChannelOptions) {
     const channel = await this.client.channels.fetch(channelID);
     if (channel) {
-      this.#listenRoleChanges(options.rolesToEmojis);
       this.emit(SelfRoleManagerEvents.channelRegister, channel, options);
     } else {
       this.emit(SelfRoleManagerEvents.error, null, `There is no channel with the id ${channelID}`);
@@ -142,6 +142,7 @@ export class SelfRoleManager extends EventEmitter {
       const options = this.channels.get(channelID);
       const isDeleted = this.channels.delete(channelID);
       if (isDeleted) {
+        this.client.off(Events.GuildMemberUpdate, options._rolesChangesListener);
         this.emit(SelfRoleManagerEvents.channelUnregister, channel, options);
       } else {
         this.emit(SelfRoleManagerEvents.error, null, `The channel with the id ${channelID} could not get unregistered`);
@@ -203,8 +204,10 @@ export class SelfRoleManager extends EventEmitter {
       }
     }
 
+    const listener = this.#rolesChangesListener(channelOptions.rolesToEmojis);
+    this.client.on(Events.GuildMemberUpdate, listener );
     if (!this.channels.has(channel.id)) {
-      this.channels.set(channel.id, { ...channelOptions, message: { ...channelOptions.message, id: message.id } });
+      this.channels.set(channel.id, { ...channelOptions, message: { ...channelOptions.message, id: message.id }, _rolesChangesListener: listener });
     }
   }
 
@@ -286,8 +289,8 @@ export class SelfRoleManager extends EventEmitter {
     }
   }
 
-  #listenRoleChanges(rolesToEmojis: RoleToEmojiData[]) {
-    this.client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
+  #rolesChangesListener(rolesToEmojis: RoleToEmojiData[]) {
+    return async (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => {
       const rolesToRemove = rolesToEmojis.filter(
         (rte) =>
           rte.requiredRoles?.some((role) => {
@@ -301,7 +304,7 @@ export class SelfRoleManager extends EventEmitter {
             this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember, null);
           }
       }
-    });
+    };
   }
 }
 
