@@ -21,7 +21,6 @@ import {
   ReactionEmoji,
   APIMessageComponentEmoji,
   GuildMember,
-  RoleResolvable,
   Events
 } from 'discord.js';
 
