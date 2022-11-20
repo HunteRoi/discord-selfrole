@@ -291,8 +291,7 @@ export class SelfRoleManager extends EventEmitter {
     this.client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
       const rolesToRemove = rolesToEmojis.filter(
         (rte) =>
-          rte.requiredRoles?.some((dep) => {
-            const role = dep instanceof Role ? dep.id : dep;
+          rte.requiredRoles?.some((role) => {
             return oldMember.roles.resolve(role) && !newMember.roles.resolve(role);
           }) ?? false
       );
