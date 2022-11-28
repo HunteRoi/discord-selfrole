@@ -80,14 +80,10 @@ manager.on('messageDelete', (message) =>
   console.log(`Message ${message.id} deleted!`)
 );
 manager.on('roleRemove', async (role, member, userAction) => {
-  if (userAction === null) {
-    console.log(`Role ${role} automatically removed from ${member.displayName}.`);
-  } else {
-    console.log(`Role ${role} removed from ${member.displayName}`);
-    userAction instanceof ButtonInteraction && await userAction.editReply({
-      content: `Your old role ${role} has been removed from you.`,
-    });
-  }
+  console.log(`Role ${role} ${userAction ? '' : 'automatically '}removed from ${member.displayName}`);
+  userAction && userAction instanceof ButtonInteraction && await userAction.editReply({
+    content: `Your old role ${role} has been removed from you.`,
+  });
 });
 manager.on('roleAdd', async (role, member, userAction) => {
   console.log(`Role ${role} given to ${member.displayName}`);
