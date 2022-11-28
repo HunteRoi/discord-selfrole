@@ -26,7 +26,7 @@ import {
 } from 'discord.js';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
-import { ChannelOptions, RoleToEmojiData, SelfRoleOptions } from './types';
+import { ChannelOptions, ChannelProperties, RoleToEmojiData, SelfRoleOptions } from './types';
 import { isNullOrWhiteSpaces, addRole, removeRole, constructMessageOptions } from './utils';
 import type { UserAction } from './types/UserAction';
 
@@ -57,9 +57,9 @@ export class SelfRoleManager extends EventEmitter {
    * The collection of registered channels.
    *
    * @name SelfRoleManager#channels
-   * @type {Collection<Snowflake, ChannelOptions>}
+   * @type {Collection<Snowflake, ChannelProperties>}
    */
-  public readonly channels: Collection<Snowflake, ChannelOptions>;
+  public readonly channels: Collection<Snowflake, ChannelProperties>;
 
   /**
    * Creates an instance of SelfRoleManager.
@@ -90,7 +90,7 @@ export class SelfRoleManager extends EventEmitter {
 
     this.client = client;
     this.options = options;
-    this.channels = new Collection<Snowflake, ChannelOptions>();
+    this.channels = new Collection<Snowflake, ChannelProperties>();
 
     if (this.options.useReactions) {
       this.client.on('messageReactionAdd', async (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
@@ -139,11 +139,11 @@ export class SelfRoleManager extends EventEmitter {
   async unregisterChannel(channelID: Snowflake) {
     const channel = await this.client.channels.fetch(channelID);
     if (channel) {
-      const options = this.channels.get(channelID);
+      const properties = this.channels.get(channelID);
       const isDeleted = this.channels.delete(channelID);
       if (isDeleted) {
-        this.client.off(Events.GuildMemberUpdate, options._rolesChangesListener);
-        this.emit(SelfRoleManagerEvents.channelUnregister, channel, options);
+        this.client.off(Events.GuildMemberUpdate, properties._rolesChangesListener);
+        this.emit(SelfRoleManagerEvents.channelUnregister, channel, properties);
       } else {
         this.emit(SelfRoleManagerEvents.error, null, `The channel with the id ${channelID} could not get unregistered`);
       }
@@ -207,7 +207,7 @@ export class SelfRoleManager extends EventEmitter {
     const listener = this.#rolesChangesListener(channelOptions.rolesToEmojis).bind(this);
     this.client.on(Events.GuildMemberUpdate, listener );
     if (!this.channels.has(channel.id)) {
-      this.channels.set(channel.id, { ...channelOptions, message: { ...channelOptions.message, id: message.id }, _rolesChangesListener: listener });
+      this.channels.set(channel.id, {options: { ...channelOptions, message: { ...channelOptions.message, id: message.id } }, _rolesChangesListener: listener});
     }
   }
 
@@ -237,7 +237,7 @@ export class SelfRoleManager extends EventEmitter {
     const member = await message.guild.members.fetch(isButtonInteraction ? userAction.member.user.id : user.id);
     if (member.user.bot) return;
 
-    const channelOptions = this.channels.get(userAction.message.channelId);
+    const channelOptions = this.channels.get(userAction.message.channelId)?.options;
     if (!channelOptions) return;
 
     const emoji = isButtonInteraction ? userAction.component.emoji : userAction.emoji;

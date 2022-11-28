@@ -43,12 +43,4 @@ export interface ChannelOptions {
    * @type {number}
    */
   maxRolesAssigned?: number;
-
-  /**
-   * Private member to store the function for event listener `GuildMemberUpdate`.
-   *
-   * @private
-   * @type {Function}
-   */
-  readonly _rolesChangesListener: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => Awaitable<void>;
 }
