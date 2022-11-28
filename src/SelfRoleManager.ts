@@ -289,7 +289,7 @@ export class SelfRoleManager extends EventEmitter {
     }
   }
 
-  #rolesChangesListener(rolesToEmojis: RoleToEmojiData[]) {
+  #rolesChangesListener(rolesToEmojis: RoleToEmojiData[]) : (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => Promise<void> {
     return async (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => {
       const rolesToRemove = rolesToEmojis.filter(
         (rte) =>
