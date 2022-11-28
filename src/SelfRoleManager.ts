@@ -143,7 +143,7 @@ export class SelfRoleManager extends EventEmitter {
       const isDeleted = this.channels.delete(channelID);
       if (isDeleted) {
         this.client.off(Events.GuildMemberUpdate, properties._rolesChangesListener);
-        this.emit(SelfRoleManagerEvents.channelUnregister, channel, properties);
+        this.emit(SelfRoleManagerEvents.channelUnregister, channel, properties.options);
       } else {
         this.emit(SelfRoleManagerEvents.error, null, `The channel with the id ${channelID} could not get unregistered`);
       }
