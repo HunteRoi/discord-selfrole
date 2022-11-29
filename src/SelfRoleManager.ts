@@ -298,7 +298,7 @@ export class SelfRoleManager extends EventEmitter {
           }) ?? false
       );
       for (const { role } of rolesToRemove) {
-        const roleToRemove = role instanceof Role ? role.id : role;
+        const roleToRemove = role instanceof Role ? role : await newMember.guild.roles.fetch(role);
           const user = await removeRole(newMember, roleToRemove);
           if (user) {
             this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember, null);
