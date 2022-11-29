@@ -207,7 +207,7 @@ export class SelfRoleManager extends EventEmitter {
     const rolesChangesListener = this.#generateRolesChangesListener(channelOptions.rolesToEmojis).bind(this);
     this.client.on(Events.GuildMemberUpdate, listener );
     if (!this.channels.has(channel.id)) {
-      this.channels.set(channel.id, {options: { ...channelOptions, message: { ...channelOptions.message, id: message.id } }, _rolesChangesListener: listener});
+      this.channels.set(channel.id, { options: { ...channelOptions, message: { ...channelOptions.message, id: message.id } }, rolesChangesListener });
     }
   }
 
