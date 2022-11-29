@@ -1,4 +1,4 @@
-import { Awaitable, GuildMember, PartialGuildMember, Snowflake } from 'discord.js';
+import { Snowflake } from 'discord.js';
 
 import { MessageOptions } from './MessageOptions';
 import { RoleToEmojiData } from './RoleToEmojiData';
