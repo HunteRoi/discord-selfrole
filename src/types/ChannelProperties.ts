@@ -15,9 +15,9 @@ export interface ChannelProperties {
   options: ChannelOptions;
 
    /**
-   * function for event listener `GuildMemberUpdate`.
+   * The listener for the `GuildMemberUpdate` event.
    *
    * @type {Function}
    */
-  _rolesChangesListener: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => Promise<void>;
+  rolesChangesListener: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => Promise<void>;
 }
