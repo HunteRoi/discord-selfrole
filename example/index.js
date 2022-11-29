@@ -34,7 +34,8 @@ client.on('ready', async () => {
       },
       {
         emoji: '<:EMOJI_NAME:EMOJI_ID>',
-        role: 'ROLE_ID'
+        role: 'ROLE_ID',
+        requiredRoles: ['OTHER_ROLE_ID'],
       }
     ],
     message: {
@@ -79,8 +80,8 @@ manager.on('messageDelete', (message) =>
   console.log(`Message ${message.id} deleted!`)
 );
 manager.on('roleRemove', async (role, member, userAction) => {
-  console.log(`Role ${role} removed from ${member.displayName}`);
-  userAction instanceof ButtonInteraction && await userAction.editReply({
+  console.log(`Role ${role} ${userAction ? '' : 'automatically '}removed from ${member.displayName}`);
+  userAction && userAction instanceof ButtonInteraction && await userAction.editReply({
     content: `Your old role ${role} has been removed from you.`,
   });
 });
@@ -107,5 +108,11 @@ manager.on('maxRolesReach', async (member, userAction, nbRoles, maxRoles) => {
 manager.on('interaction', (rte, interaction) =>
   console.log(`An interaction has been made by ${interaction.member.displayName}`)
 );
+manager.on('requiredRolesMissing', async (member, userAction, role, dependencies) => {
+  console.log(`${member.displayName} doesn't have the required roles to get the role ${role}!`, dependencies);
+  userAction instanceof ButtonInteraction && await userAction.editReply({
+    content: `${member.displayName} doesn't have the required roles to get the role ${role}!`
+  });
+});
 
 client.login('TOKEN');

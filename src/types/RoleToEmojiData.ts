@@ -36,4 +36,12 @@ export interface RoleToEmojiData {
    * @memberof RoleToEmojiData
    */
   removeOnReact?: boolean;
+
+  /**
+   * List of required roles to be able to react to this role.
+   *
+   * @type {RoleResolvable[]}
+   * @memberof RoleToEmojiData
+   */
+  requiredRoles?: RoleResolvable[];
 }

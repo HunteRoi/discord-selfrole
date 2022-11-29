@@ -14,6 +14,7 @@ export enum SelfRoleManagerEvents {
   interaction = 'interaction',
 
   maxRolesReach = 'maxRolesReach',
+  requiredRolesMissing = 'requiredRolesMissing',
 
   error = 'error',
 }

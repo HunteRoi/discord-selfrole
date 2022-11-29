@@ -20,12 +20,15 @@ import {
   GuildEmoji,
   ReactionEmoji,
   APIMessageComponentEmoji,
-  GuildMember
+  GuildMember,
+  Events,
+  PartialGuildMember
 } from 'discord.js';
 
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
-import { ChannelOptions, RoleToEmojiData, SelfRoleOptions } from './types';
+import { ChannelOptions, ChannelProperties, RoleToEmojiData, SelfRoleOptions } from './types';
 import { isNullOrWhiteSpaces, addRole, removeRole, constructMessageOptions } from './utils';
+import type { UserAction } from './types/UserAction';
 
 /**
  * The manager handling assignation and removal of roles based on user interactions/reactions.
@@ -54,9 +57,9 @@ export class SelfRoleManager extends EventEmitter {
    * The collection of registered channels.
    *
    * @name SelfRoleManager#channels
-   * @type {Collection<Snowflake, ChannelOptions>}
+   * @type {Collection<Snowflake, ChannelProperties>}
    */
-  public readonly channels: Collection<Snowflake, ChannelOptions>;
+  public readonly channels: Collection<Snowflake, ChannelProperties>;
 
   /**
    * Creates an instance of SelfRoleManager.
@@ -87,7 +90,7 @@ export class SelfRoleManager extends EventEmitter {
 
     this.client = client;
     this.options = options;
-    this.channels = new Collection<Snowflake, ChannelOptions>();
+    this.channels = new Collection<Snowflake, ChannelProperties>();
 
     if (this.options.useReactions) {
       this.client.on('messageReactionAdd', async (messageReaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) =>
@@ -136,10 +139,11 @@ export class SelfRoleManager extends EventEmitter {
   async unregisterChannel(channelID: Snowflake) {
     const channel = await this.client.channels.fetch(channelID);
     if (channel) {
-      const options = this.channels.get(channelID);
+      const properties = this.channels.get(channelID);
       const isDeleted = this.channels.delete(channelID);
       if (isDeleted) {
-        this.emit(SelfRoleManagerEvents.channelUnregister, channel, options);
+        this.client.off(Events.GuildMemberUpdate, properties.rolesChangesListener);
+        this.emit(SelfRoleManagerEvents.channelUnregister, channel, properties.options);
       } else {
         this.emit(SelfRoleManagerEvents.error, null, `The channel with the id ${channelID} could not get unregistered`);
       }
@@ -200,8 +204,10 @@ export class SelfRoleManager extends EventEmitter {
       }
     }
 
+    const rolesChangesListener = this.#generateRolesChangesListener(channelOptions.rolesToEmojis).bind(this);
+    this.client.on(Events.GuildMemberUpdate, rolesChangesListener);
     if (!this.channels.has(channel.id)) {
-      this.channels.set(channel.id, { ...channelOptions, message: { ...channelOptions.message, id: message.id } });
+      this.channels.set(channel.id, { options: { ...channelOptions, message: { ...channelOptions.message, id: message.id } }, rolesChangesListener });
     }
   }
 
@@ -231,7 +237,7 @@ export class SelfRoleManager extends EventEmitter {
     const member = await message.guild.members.fetch(isButtonInteraction ? userAction.member.user.id : user.id);
     if (member.user.bot) return;
 
-    const channelOptions = this.channels.get(userAction.message.channelId);
+    const channelOptions = this.channels.get(userAction.message.channelId)?.options;
     if (!channelOptions) return;
 
     const emoji = isButtonInteraction ? userAction.component.emoji : userAction.emoji;
@@ -242,9 +248,10 @@ export class SelfRoleManager extends EventEmitter {
     }
 
     const rolesFromEmojis = channelOptions.rolesToEmojis.map((rte: RoleToEmojiData) => rte.role);
-    const memberRoles = [...member.roles.cache.values()].filter((role: Role) => rolesFromEmojis.includes(role.id));
-    const maxRolesReached = channelOptions.maxRolesAssigned && memberRoles.length >= channelOptions.maxRolesAssigned;
-    const memberHasRole = memberRoles.some((role: Role) => rteData.role instanceof Role ? rteData.role === role : rteData.role === role.id);
+    const memberRoles = [...member.roles.cache.values()];
+    const memberManagedRoles = memberRoles.filter((role: Role) => rolesFromEmojis.includes(role.id));
+    const maxRolesReached = channelOptions.maxRolesAssigned && memberManagedRoles.length >= channelOptions.maxRolesAssigned;
+    const memberHasRole = memberRoles.some((role: Role) => (rteData.role instanceof Role ? rteData.role === role : rteData.role === role.id));
 
     if (isButtonInteraction) {
       this.emit(SelfRoleManagerEvents.interaction, rteData, userAction);
@@ -255,10 +262,19 @@ export class SelfRoleManager extends EventEmitter {
     const userWantsToRemoveRole = isButtonInteraction ? memberHasRole : memberHasRole && ((!rteData.removeOnReact && isReactionRemoval) || (rteData.removeOnReact && !isReactionRemoval));
     const userWantsToAddRole = isButtonInteraction ? !memberHasRole : !memberHasRole && ((!rteData.removeOnReact && !isReactionRemoval) || (rteData.removeOnReact && isReactionRemoval));
     const role: Role = rteData.role instanceof Role ? rteData.role : await userAction.message.guild.roles.fetch(rteData.role);
+    const userHasRequiredRoles  = rteData.requiredRoles
+      ?.every(role => role instanceof Role
+        ? memberRoles.includes(role)
+        : memberRoles.map(r => r.id).includes(role)
+      ) ?? true;
+
     let updatedMember: GuildMember;
     switch (true) {
       case userWantsToAddRole && maxRolesReached:
-        this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberRoles.length, channelOptions.maxRolesAssigned);
+        this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberManagedRoles.length, channelOptions.maxRolesAssigned);
+        break;
+      case userWantsToAddRole && !userHasRequiredRoles :
+        this.emit(SelfRoleManagerEvents.requiredRolesMissing, member, userAction, role, rteData.requiredRoles);
         break;
       case userWantsToAddRole:
         updatedMember = await addRole(member, role);
@@ -271,6 +287,24 @@ export class SelfRoleManager extends EventEmitter {
         else this.emit(SelfRoleManagerEvents.error, null, `The role ${role.name} could not be added to ${member.nickname}`, [role, member]);
         break;
     }
+  }
+
+  #generateRolesChangesListener(rolesToEmojis: RoleToEmojiData[]) : (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => Promise<void> {
+    return async (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => {
+      const rolesToRemove = rolesToEmojis.filter(
+        (rte) =>
+          rte.requiredRoles?.some((role) => {
+            return oldMember.roles.resolve(role) && !newMember.roles.resolve(role);
+          }) ?? false
+      );
+      for (const { role } of rolesToRemove) {
+        const roleToRemove = role instanceof Role ? role.id : role;
+          const user = await removeRole(newMember, roleToRemove);
+          if (user) {
+            this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember, null);
+          }
+      }
+    };
   }
 }
 
@@ -332,7 +366,7 @@ export class SelfRoleManager extends EventEmitter {
  * @event SelfRoleManager#roleRemove
  * @param {RoleResolvable} role
  * @param {GuildMember} member
- * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
+ * @param {UserAction} userAction
  * @example
  * manager.on(SelfRoleManagerEvents.roleRemove, (role, member, userAction) => {});
  */
@@ -342,7 +376,7 @@ export class SelfRoleManager extends EventEmitter {
  * @event SelfRoleManager#roleAdd
  * @param {RoleResolvable} role
  * @param {GuildMember} member
- * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
+ * @param {UserAction} userAction
  * @example
  * manager.on(SelfRoleManagerEvents.roleAdd, (role, member, userAction) => {});
  */
@@ -369,7 +403,7 @@ export class SelfRoleManager extends EventEmitter {
  * Emitted when the maximum of roles is reached for the member.
  * @event SelfRoleManager#maxRolesReach
  * @param {GuildMember} member
- * @param {ButtonInteraction | MessageReaction | PartialMessageReaction} userAction
+ * @param {UserAction} userAction
  * @param {number | null} nbRoles
  * @param {number | null} maximumRoles
  * @example
@@ -383,4 +417,15 @@ export class SelfRoleManager extends EventEmitter {
  * @param {ButtonInteraction} interaction
  * @example
  * manager.on(SelfRoleManagerEvents.interaction, (rte, interaction) => {});
+ */
+
+/**
+ * Emitted when the user wants a role but does not have the required roles to apply for it.
+ * @event SelfRoleManager#requiredRolesMissing
+ * @param {GuildMember} member
+ * @param {UserAction} userAction
+ * @param {Role} role the role to add
+ * @param {RoleResolvable[]} requiredRoles the required roles to pass the conditions
+ * @example
+ * manager.on(SelfRoleManagerEvents.requiredRolesMissing, (member, userAction, role, requiredRoles) => {});
  */
