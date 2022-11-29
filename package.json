@@ -5,6 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
+    "build:docs": "typedoc",
+    "prepublish": "yarn build:docs",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\" \"example/**/*.ts\" \"example/**/*.js\" ",
     "lint": "tslint -p tsconfig.json",
     "start": "yarn build & node ./example/index.js"
@@ -32,6 +34,7 @@
     "@types/node": "^18.11.9",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
+    "typedoc": "^0.23.21",
     "typescript": "^4.8.4"
   },
   "directories": {

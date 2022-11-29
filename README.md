@@ -10,9 +10,9 @@ Discord SelfRole is a framework to easily create a channel with automated role-g
 - Allow full customization of the embed (you can add image, thumbnail, etc.)
 - And much more!
 
-![IMAGE](./assets/example.gif)
+![IMAGE](https://raw.githubusercontent.com/HunteRoi/discord-selfrole/master/assets/example.gif)
 
-See [./example/index.js](example/index.js).
+See [./example/index.js](https://github.com/hunteroi/discord-selfrole/tree/master/example/index.js).
 
 ## Prerequisites ⚠️
 
