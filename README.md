@@ -60,9 +60,11 @@ manager.on(SelfRoleManagerEvents.roleRemove, (role, member, interaction) => {});
 
 manager.on(SelfRoleManagerEvents.roleAdd, (role, member, interaction) => {});
 
-manager.on(SelfRoleManagerEvents.reactionAdd, (rte, message) => {});
+manager.on(SelfRoleManagerEvents.reactionAdd, (rte, message) => {}); // only if useReactions is set to true
 
-manager.on(SelfRoleManagerEvents.reactionRemove, (rte, message) => {});
+manager.on(SelfRoleManagerEvents.reactionRemove, (rte, message) => {}); // only if useReactions is set to true
+
+maanger.on(SelfRoleManagerEvents.interaction, (rte, interaction) => {}); // only if useReactions is set to false
 
 manager.on(SelfRoleManagerEvents.maxRolesReach, (member, interaction, nbRoles, maxRoles) => {});
 ```
