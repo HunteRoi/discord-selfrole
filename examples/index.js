@@ -97,12 +97,12 @@ manager.on('reactionAdd', (rte, message) =>
 manager.on('reactionRemove', (rte, message) =>
   console.log(`${rte.emoji} removed from ${message.id}`)
 );
-manager.on('maxRolesReach', async (member, userAction, nbRoles, maxRoles) => {
+manager.on('maxRolesReach', async (member, userAction, nbRoles, maxRoles, role) => {
   console.log(
     `${member.displayName} has reached or exceeded the max roles (${nbRoles}/${maxRoles})!`
   );
   userAction instanceof ButtonInteraction && await userAction.editReply({
-    content: `You reached or exceed the maximum number of roles (${nbRoles}/${maxRoles})!`,
+    content: `You reached or exceed the maximum number of roles (${nbRoles}/${maxRoles})! You cannot get ${role}.`,
   });
 });
 manager.on('interaction', (rte, interaction) =>

@@ -16,14 +16,14 @@
 <li><a href="SelfRoleManagerEvents.html">SelfRoleManagerEvents</a></li></ul>
 <h1>Enumeration SelfRoleManagerEvents</h1></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L1">SelfRoleManagerEvents.ts:1</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L12">SelfRoleManagerEvents.ts:12</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
 <h5 class="tsd-index-heading uppercase" role="button" aria-expanded="false" tabIndex=0><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M1.5 5.50969L8 11.6609L14.5 5.50969L12.5466 3.66086L8 7.96494L3.45341 3.66086L1.5 5.50969Z" fill="var(--color-text)"></path></svg> Index</h5></summary>
 <div class="tsd-accordion-details">
 <section class="tsd-index-section">
-<h3 class="tsd-index-heading">Enumeration Members</h3>
+<h3 class="tsd-index-heading">Events</h3>
 <div class="tsd-index-list"><a href="SelfRoleManagerEvents.html#channelRegister" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>channel<wbr/>Register</span></a>
 <a href="SelfRoleManagerEvents.html#channelUnregister" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>channel<wbr/>Unregister</span></a>
 <a href="SelfRoleManagerEvents.html#error" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>error</span></a>
@@ -39,72 +39,210 @@
 <a href="SelfRoleManagerEvents.html#roleRemove" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>role<wbr/>Remove</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
-<h2>Enumeration Members</h2>
+<h2>Events</h2>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="channelRegister" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>channel<wbr/>Register</span><a href="#channelRegister" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
-<div class="tsd-signature">channel<wbr/>Register<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;channelRegister&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">channel<wbr/>Register<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;channelRegister&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when a channel is registered.
+ SelfRoleManager#channelRegister</p>
+
+<h3>Param</h3><p>The channel reference</p>
+
+<h3>Param</h3><p>The channel options</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">channelRegister</span><span class="hl-0">, (</span><span class="hl-1">channel</span><span class="hl-0">, </span><span class="hl-1">options</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L2">SelfRoleManagerEvents.ts:2</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L21">SelfRoleManagerEvents.ts:21</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="channelUnregister" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>channel<wbr/>Unregister</span><a href="#channelUnregister" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">channel<wbr/>Unregister<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;channelUnregister&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">channel<wbr/>Unregister<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;channelUnregister&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when a channel is unregistered.
+ SelfRoleManager#channelUnregister</p>
+
+<h3>Param</h3><p>The channel reference</p>
+
+<h3>Param</h3><p>The channel options</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">channelUnregister</span><span class="hl-0">, (</span><span class="hl-1">channel</span><span class="hl-0">, </span><span class="hl-1">options</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L3">SelfRoleManagerEvents.ts:3</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L30">SelfRoleManagerEvents.ts:30</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="error" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>error</span><a href="#error" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;error&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;error&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when an error occurs.
+ SelfRoleManager#error</p>
+
+<h3>Param</h3><p>The error object</p>
+
+<h3>Param</h3><p>The message of the error</p>
+
+<h3>Param</h3><p>The possible arguments in case of error when adding/removing a role.</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">error</span><span class="hl-0">, (</span><span class="hl-1">error</span><span class="hl-0">, </span><span class="hl-1">message</span><span class="hl-0">, </span><span class="hl-1">args</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L19">SelfRoleManagerEvents.ts:19</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L139">SelfRoleManagerEvents.ts:139</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="interaction" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>interaction</span><a href="#interaction" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">interaction<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;interaction&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">interaction<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;interaction&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when an interaction is made.
+ SelfRoleManager#interaction</p>
+
+<h3>Param</h3><p>The role to emoji data</p>
+
+<h3>Param</h3><p>The interaction</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">interaction</span><span class="hl-0">, (</span><span class="hl-1">rte</span><span class="hl-0">, </span><span class="hl-1">interaction</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L14">SelfRoleManagerEvents.ts:14</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L105">SelfRoleManagerEvents.ts:105</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="maxRolesReach" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>max<wbr/>Roles<wbr/>Reach</span><a href="#maxRolesReach" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">max<wbr/>Roles<wbr/>Reach<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;maxRolesReach&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">max<wbr/>Roles<wbr/>Reach<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;maxRolesReach&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when the maximum of roles is reached for the member.
+ SelfRoleManager#maxRolesReach</p>
+
+<h3>Param</h3><p>The guild member</p>
+
+<h3>Param</h3><p>The user action</p>
+
+<h3>Param</h3><p>The number of current roles assigned to the user</p>
+
+<h3>Param</h3><p>The maximum roles assignable to the user</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">maxRolesReach</span><span class="hl-0">, (</span><span class="hl-1">member</span><span class="hl-0">, </span><span class="hl-1">userAction</span><span class="hl-0">, </span><span class="hl-1">nbRoles</span><span class="hl-0">, </span><span class="hl-1">maximumRoles</span><span class="hl-0">, </span><span class="hl-1">role</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L16">SelfRoleManagerEvents.ts:16</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L117">SelfRoleManagerEvents.ts:117</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="messageCreate" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>message<wbr/>Create</span><a href="#messageCreate" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">message<wbr/>Create<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;messageCreate&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">message<wbr/>Create<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;messageCreate&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when a message is created.
+ SelfRoleManager#messageCreate</p>
+
+<h3>Param</h3><p>The message</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">messageCreate</span><span class="hl-0">, (</span><span class="hl-1">message</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L6">SelfRoleManagerEvents.ts:6</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L47">SelfRoleManagerEvents.ts:47</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="messageDelete" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>message<wbr/>Delete</span><a href="#messageDelete" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">message<wbr/>Delete<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;messageDelete&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">message<wbr/>Delete<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;messageDelete&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when a message is deleted.
+ SelfRoleManager#messageDelete</p>
+
+<h3>Param</h3><p>The message</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">messageDelete</span><span class="hl-0">, (</span><span class="hl-1">message</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L7">SelfRoleManagerEvents.ts:7</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L55">SelfRoleManagerEvents.ts:55</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="messageRetrieve" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>message<wbr/>Retrieve</span><a href="#messageRetrieve" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">message<wbr/>Retrieve<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;messageRetrieve&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">message<wbr/>Retrieve<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;messageRetrieve&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when a message is retrieved.
+ SelfRoleManager#messageRetrieve</p>
+
+<h3>Param</h3><p>The message</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">messageRetrieve</span><span class="hl-0">, (</span><span class="hl-1">message</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L5">SelfRoleManagerEvents.ts:5</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L39">SelfRoleManagerEvents.ts:39</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="reactionAdd" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>reaction<wbr/>Add</span><a href="#reactionAdd" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">reaction<wbr/>Add<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;reactionAdd&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">reaction<wbr/>Add<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;reactionAdd&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when a reaction is added.
+ SelfRoleManager#reactionAdd</p>
+
+<h3>Param</h3><p>The role to emoji data</p>
+
+<h3>Param</h3><p>The message</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">reactionAdd</span><span class="hl-0">, (</span><span class="hl-1">rte</span><span class="hl-0">, </span><span class="hl-1">message</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L12">SelfRoleManagerEvents.ts:12</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L86">SelfRoleManagerEvents.ts:86</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="reactionRemove" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>reaction<wbr/>Remove</span><a href="#reactionRemove" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">reaction<wbr/>Remove<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;reactionRemove&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">reaction<wbr/>Remove<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;reactionRemove&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when a reaction is removed.
+ SelfRoleManager#reactionRemove</p>
+
+<h3>Param</h3><p>The role to emoji data</p>
+
+<h3>Param</h3><p>The message</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">reactionRemove</span><span class="hl-0">, (</span><span class="hl-1">rte</span><span class="hl-0">, </span><span class="hl-1">message</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L13">SelfRoleManagerEvents.ts:13</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L95">SelfRoleManagerEvents.ts:95</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="requiredRolesMissing" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>required<wbr/>Roles<wbr/>Missing</span><a href="#requiredRolesMissing" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">required<wbr/>Roles<wbr/>Missing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;requiredRolesMissing&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">required<wbr/>Roles<wbr/>Missing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;requiredRolesMissing&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when the user wants a role but does not have the required roles to apply for it.
+ SelfRoleManager#requiredRolesMissing</p>
+
+<h3>Param</h3><p>The guild member</p>
+
+<h3>Param</h3><p>The user action</p>
+
+<h3>Param</h3><p>The role to add</p>
+
+<h3>Param</h3><p>The required roles to pass the conditions</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">requiredRolesMissing</span><span class="hl-0">, (</span><span class="hl-1">member</span><span class="hl-0">, </span><span class="hl-1">userAction</span><span class="hl-0">, </span><span class="hl-1">role</span><span class="hl-0">, </span><span class="hl-1">requiredRoles</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L17">SelfRoleManagerEvents.ts:17</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L128">SelfRoleManagerEvents.ts:128</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="roleAdd" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>role<wbr/>Add</span><a href="#roleAdd" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">role<wbr/>Add<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;roleAdd&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">role<wbr/>Add<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;roleAdd&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when a role is added.
+ SelfRoleManager#roleAdd</p>
+
+<h3>Param</h3><p>The role</p>
+
+<h3>Param</h3><p>The guild member</p>
+
+<h3>Param</h3><p>The user action</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">roleAdd</span><span class="hl-0">, (</span><span class="hl-1">role</span><span class="hl-0">, </span><span class="hl-1">member</span><span class="hl-0">, </span><span class="hl-1">userAction</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L9">SelfRoleManagerEvents.ts:9</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L66">SelfRoleManagerEvents.ts:66</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="roleRemove" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>role<wbr/>Remove</span><a href="#roleRemove" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">role<wbr/>Remove<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;roleRemove&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">role<wbr/>Remove<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;roleRemove&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Emitted when a role is removed.
+ SelfRoleManager#roleRemove</p>
+
+<h3>Param</h3><p>The role</p>
+
+<h3>Param</h3><p>The guild member</p>
+
+<h3>Param</h3><p>The user action</p>
+
+<h3>Example</h3><pre><code class="language-ts"><span class="hl-1">manager</span><span class="hl-0">.</span><span class="hl-2">on</span><span class="hl-0">(</span><span class="hl-1">SelfRoleManagerEvents</span><span class="hl-0">.</span><span class="hl-1">roleRemove</span><span class="hl-0">, (</span><span class="hl-1">role</span><span class="hl-0">, </span><span class="hl-1">member</span><span class="hl-0">, </span><span class="hl-1">userAction</span><span class="hl-0">) </span><span class="hl-3">=&gt;</span><span class="hl-0"> {});</span>
+</code></pre>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/cc1cc32/src/SelfRoleManagerEvents.ts#L10">SelfRoleManagerEvents.ts:10</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/hunteroi/discord-selfrole/blob/92e8826/src/SelfRoleManagerEvents.ts#L76">SelfRoleManagerEvents.ts:76</a></li></ul></aside></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
