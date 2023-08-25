@@ -29,6 +29,8 @@ import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
 import { ChannelOptions, ChannelProperties, RoleToEmojiData, SelfRoleOptions } from './types';
 import { isNullOrWhiteSpaces, addRole, removeRole, constructMessageOptions } from './utils';
 
+const packagePrefix: string = 'sr-';
+
 /**
  * The manager handling assignation and removal of roles based on user interactions/reactions.
  *
@@ -100,7 +102,7 @@ export class SelfRoleManager extends EventEmitter {
       );
     } else {
       this.client.on('interactionCreate', async (interaction: Interaction) => {
-        if (interaction.isButton()) {
+        if (interaction.isButton() && interaction.customId.startsWith(packagePrefix)) {
           await interaction.deferReply({ ephemeral: true, fetchReply: true });
           await this.#handleUserAction(interaction);
         }
@@ -161,7 +163,10 @@ export class SelfRoleManager extends EventEmitter {
   #getRTE(sender: ButtonInteraction | MessageReaction | PartialMessageReaction, channelOptions: ChannelOptions, emoji: GuildEmoji | ReactionEmoji | APIMessageComponentEmoji): RoleToEmojiData {
     if (sender instanceof ButtonInteraction) {
       const button = sender.component as ButtonComponent;
-      if (button.customId) return channelOptions.rolesToEmojis.find((rte: RoleToEmojiData) => rte.role.toString() === button.customId);
+      if (button.customId) {
+        const targetRoleId = button.customId.substring(packagePrefix.length);
+        return channelOptions.rolesToEmojis.find((rte: RoleToEmojiData) => rte.role.toString() === targetRoleId);
+      }
     }
 
     const emojiIdentifier = isNullOrWhiteSpaces(emoji.id) ? emoji.name : emoji.toString();
@@ -190,7 +195,7 @@ export class SelfRoleManager extends EventEmitter {
             .map((rte: RoleToEmojiData) =>
               new ButtonBuilder()
                 .setEmoji(rte.emoji)
-                .setCustomId(rte.role instanceof Role ? rte.role.id : rte.role)
+                .setCustomId(`${packagePrefix}${rte.role instanceof Role ? rte.role.id : rte.role}`)
                 .setStyle(ButtonStyle.Secondary)
             )
         );
