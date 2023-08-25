@@ -66,7 +66,7 @@ manager.on(SelfRoleManagerEvents.reactionRemove, (rte, message) => {}); // only 
 
 maanger.on(SelfRoleManagerEvents.interaction, (rte, interaction) => {}); // only if useReactions is set to false
 
-manager.on(SelfRoleManagerEvents.maxRolesReach, (member, interaction, nbRoles, maxRoles) => {});
+manager.on(SelfRoleManagerEvents.maxRolesReach, (member, interaction, nbRoles, maxRoles, role) => {});
 
 manager.on(SelfRoleManagerEvents.requiredRolesMissing, (member, userAction, role, requiredRoles) => {});
 ```

@@ -28,7 +28,6 @@ import {
 import { SelfRoleManagerEvents } from './SelfRoleManagerEvents';
 import { ChannelOptions, ChannelProperties, RoleToEmojiData, SelfRoleOptions } from './types';
 import { isNullOrWhiteSpaces, addRole, removeRole, constructMessageOptions } from './utils';
-import type { UserAction } from './types/UserAction';
 
 /**
  * The manager handling assignation and removal of roles based on user interactions/reactions.
@@ -262,7 +261,7 @@ export class SelfRoleManager extends EventEmitter {
     const userWantsToRemoveRole = isButtonInteraction ? memberHasRole : memberHasRole && ((!rteData.removeOnReact && isReactionRemoval) || (rteData.removeOnReact && !isReactionRemoval));
     const userWantsToAddRole = isButtonInteraction ? !memberHasRole : !memberHasRole && ((!rteData.removeOnReact && !isReactionRemoval) || (rteData.removeOnReact && isReactionRemoval));
     const role: Role = rteData.role instanceof Role ? rteData.role : await userAction.message.guild.roles.fetch(rteData.role);
-    const userHasRequiredRoles  = rteData.requiredRoles
+    const userHasRequiredRoles = rteData.requiredRoles
       ?.every(role => role instanceof Role
         ? memberRoles.includes(role)
         : memberRoles.map(r => r.id).includes(role)
@@ -273,7 +272,7 @@ export class SelfRoleManager extends EventEmitter {
       case userWantsToAddRole && maxRolesReached:
         this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberManagedRoles.length, channelOptions.maxRolesAssigned, role);
         break;
-      case userWantsToAddRole && !userHasRequiredRoles :
+      case userWantsToAddRole && !userHasRequiredRoles:
         this.emit(SelfRoleManagerEvents.requiredRolesMissing, member, userAction, role, rteData.requiredRoles);
         break;
       case userWantsToAddRole:
@@ -289,7 +288,7 @@ export class SelfRoleManager extends EventEmitter {
     }
   }
 
-  #generateRolesChangesListener(rolesToEmojis: RoleToEmojiData[]) : (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => Promise<void> {
+  #generateRolesChangesListener(rolesToEmojis: RoleToEmojiData[]): (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => Promise<void> {
     return async (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember) => {
       const rolesToRemove = rolesToEmojis.filter(
         (rte) =>
@@ -299,133 +298,11 @@ export class SelfRoleManager extends EventEmitter {
       );
       for (const { role } of rolesToRemove) {
         const roleToRemove = role instanceof Role ? role : await newMember.guild.roles.fetch(role);
-          const user = await removeRole(newMember, roleToRemove);
-          if (user) {
-            this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember, null);
-          }
+        const user = await removeRole(newMember, roleToRemove);
+        if (user) {
+          this.emit(SelfRoleManagerEvents.roleRemove, roleToRemove, newMember, null);
+        }
       }
     };
   }
 }
-
-
-/**
- * Emitted when a channel is registered.
- * @event SelfRoleManager#channelRegister
- * @param {TextChannel} channel The channel reference
- * @param {ChannelOptions} options The channel options
- * @example
- * manager.on(SelfRoleManagerEvents.channelRegister, (channel, options) => {});
- */
-
-/**
- * Emitted when a channel is unregistered.
- * @event SelfRoleManager#channelUnregister
- * @param {TextChannel} channel The channel reference
- * @param {ChannelOptions} options The channel options
- * @example
- * manager.on(SelfRoleManagerEvents.channelUnregister, (channel, options) => {});
- */
-
-/**
- * Emitted when an error occurs.
- * @event SelfRoleManager#error
- * @param {Error} error The error object
- * @param {string} message The message of the error
- * @param {[Role, GuildMember]} args The possible arguments in case of error when adding/removing a role.
- * @example
- * manager.on(SelfRoleManagerEvents.error, (error, message, args) => {});
- */
-
-/**
- * Emitted when a message is retrieved.
- * @event SelfRoleManager#messageRetrieve
- * @param {Message} message
- * @example
- * manager.on(SelfRoleManagerEvents.messageRetrieve, (message) => {});
- */
-
-/**
- * Emitted when a message is created.
- * @event SelfRoleManager#messageCreate
- * @param {Message} message
- * @example
- * manager.on(SelfRoleManagerEvents.messageCreate, (message) => {});
- */
-
-/**
- * Emitted when a message is deleted.
- * @event SelfRoleManager#messageDelete
- * @param {Message} message
- * @example
- * manager.on(SelfRoleManagerEvents.messageDelete, (message) => {});
- */
-
-/**
- * Emitted when a role is removed.
- * @event SelfRoleManager#roleRemove
- * @param {RoleResolvable} role
- * @param {GuildMember} member
- * @param {UserAction} userAction
- * @example
- * manager.on(SelfRoleManagerEvents.roleRemove, (role, member, userAction) => {});
- */
-
-/**
- * Emitted when a role is added.
- * @event SelfRoleManager#roleAdd
- * @param {RoleResolvable} role
- * @param {GuildMember} member
- * @param {UserAction} userAction
- * @example
- * manager.on(SelfRoleManagerEvents.roleAdd, (role, member, userAction) => {});
- */
-
-/**
- * Emitted when a reaction is added.
- * @event SelfRoleManager#reactionAdd
- * @param {RoleToEmojiData} rte
- * @param {Message} message
- * @example
- * manager.on(SelfRoleManagerEvents.reactionAdd, (rte, message) => {});
- */
-
-/**
- * Emitted when a reaction is removed.
- * @event SelfRoleManager#reactionRemove
- * @param {RoleToEmojiData} rte
- * @param {Message} message
- * @example
- * manager.on(SelfRoleManagerEvents.reactionRemove, (rte, message) => {});
- */
-
-/**
- * Emitted when the maximum of roles is reached for the member.
- * @event SelfRoleManager#maxRolesReach
- * @param {GuildMember} member
- * @param {UserAction} userAction
- * @param {number | null} nbRoles
- * @param {number | null} maximumRoles
- * @example
- * manager.on(SelfRoleManagerEvents.maxRolesReach, (member, userAction, nbRoles, maximumRoles) => {});
- */
-
-/**
- * Emitted when an interaction is made.
- * @event SelfRoleManager#interaction
- * @param {RoleToEmojiData} rte
- * @param {ButtonInteraction} interaction
- * @example
- * manager.on(SelfRoleManagerEvents.interaction, (rte, interaction) => {});
- */
-
-/**
- * Emitted when the user wants a role but does not have the required roles to apply for it.
- * @event SelfRoleManager#requiredRolesMissing
- * @param {GuildMember} member
- * @param {UserAction} userAction
- * @param {Role} role the role to add
- * @param {RoleResolvable[]} requiredRoles the required roles to pass the conditions
- * @example
- * manager.on(SelfRoleManagerEvents.requiredRolesMissing, (member, userAction, role, requiredRoles) => {});
- */
