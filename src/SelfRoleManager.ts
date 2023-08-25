@@ -271,7 +271,7 @@ export class SelfRoleManager extends EventEmitter {
     let updatedMember: GuildMember;
     switch (true) {
       case userWantsToAddRole && maxRolesReached:
-        this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberManagedRoles.length, channelOptions.maxRolesAssigned);
+        this.emit(SelfRoleManagerEvents.maxRolesReach, member, userAction, memberManagedRoles.length, channelOptions.maxRolesAssigned, role);
         break;
       case userWantsToAddRole && !userHasRequiredRoles :
         this.emit(SelfRoleManagerEvents.requiredRolesMissing, member, userAction, role, rteData.requiredRoles);
