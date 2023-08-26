@@ -36,6 +36,18 @@ client.on('ready', async () => {
         emoji: '<:EMOJI_NAME:EMOJI_ID>',
         role: 'ROLE_ID',
         requiredRoles: ['OTHER_ROLE_ID'],
+      },
+      {
+        emoji: '4⃣',
+        role: 'ROLE_ID',
+      },
+      {
+        emoji: '5⃣',
+        role: 'ROLE_ID',
+      },
+      {
+        emoji: '6⃣',
+        role: 'ROLE_ID',
       }
     ],
     message: {
@@ -47,7 +59,7 @@ client.on('ready', async () => {
         },
       },
     },
-    maxRolesAssigned: 1,
+    maxRolesAssigned: 4,
   });
 
   console.log('Connected!');

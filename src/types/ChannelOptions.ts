@@ -11,7 +11,7 @@ import { RoleToEmojiData } from './RoleToEmojiData';
 export interface ChannelOptions {
   /**
    * The list of role-emoji pairs to add as reactions to the message.
-   * A maximum of 5 role-emoji pairs are taken when using emoji button components.
+   * A maximum of 25 role-emoji pairs are taken when using emoji button components.
    *
    * @type {RoleToEmojiData[]}
    */

@@ -8,24 +8,24 @@ import { ChannelOptions, RoleToEmojiData } from '../types';
  *
  * @export
  * @param {ChannelOptions} channelOptions The channel options
- * @param {ActionRowBuilder<ButtonBuilder>} [actionRowBuilder] The potential action row builder
+ * @param {ActionRowBuilder<ButtonBuilder>[]} [actionRowBuilders] The potential action row builder
  * @return {*}  {MessageOptions}
  */
-export function constructMessageOptions(channelOptions: ChannelOptions, actionRowBuilder?: ActionRowBuilder<ButtonBuilder>): MessageCreateOptions {
+export function constructMessageOptions(channelOptions: ChannelOptions, actionRowBuilders?: ActionRowBuilder<ButtonBuilder>[]): MessageCreateOptions {
   const content = generateContent(channelOptions);
-  return buildMessage(content, actionRowBuilder);
+  return buildMessage(content, actionRowBuilders);
 }
 
 /**
    * Builds the {@link MessageOptions} to send.
    *
    * @param content The message text or embed
-   * @param actionRowBuilder The button to add to the message, if applicable
+   * @param {ActionRowBuilder<ButtonBuilder>[]} [actionRowBuilders] The button to add to the message, if applicable
    * @returns The message to send
    */
-function buildMessage(content: string | EmbedBuilder, actionRowBuilder?: ActionRowBuilder<ButtonBuilder>): MessageCreateOptions {
+function buildMessage(content: string | EmbedBuilder, actionRowBuilders?: ActionRowBuilder<ButtonBuilder>[]): MessageCreateOptions {
   return {
-    components: actionRowBuilder ? [actionRowBuilder] : [],
+    components: actionRowBuilders ? actionRowBuilders : [],
     embeds: (content instanceof EmbedBuilder ? [content] : []),
     content: (content instanceof EmbedBuilder ? undefined : content)
   };

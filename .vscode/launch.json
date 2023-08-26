@@ -7,11 +7,11 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Debug Example",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\example\\index.js",
+            "program": "${workspaceFolder}\\examples\\index.js",
             "preLaunchTask": {
                 "type": "npm",
                 "script": "build"
