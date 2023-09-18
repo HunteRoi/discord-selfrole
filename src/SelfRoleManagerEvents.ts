@@ -69,7 +69,7 @@ export enum SelfRoleManagerEvents {
    * @event SelfRoleManager#roleRemove
    * @param {RoleResolvable} role The role
    * @param {GuildMember} member The guild member
-   * @param {UserAction} userAction The user action
+   * @param {UserAction | null} userAction The user action. When null, it means the bot detected a required role removal and thus removes whatever role is related
    * @example
    * manager.on(SelfRoleManagerEvents.roleRemove, (role, member, userAction) => {});
    */
@@ -130,9 +130,9 @@ export enum SelfRoleManagerEvents {
   /**
    * Emitted when an error occurs.
    * @event SelfRoleManager#error
-   * @param {Error} error The error object
+   * @param {Error | null} error The error object, if applicable
    * @param {string} message The message of the error
-   * @param {[Role, GuildMember]} args The possible arguments in case of error when adding/removing a role.
+   * @param {[Role, GuildMember]} args The possible arguments in case of error when adding/removing a role
    * @example
    * manager.on(SelfRoleManagerEvents.error, (error, message, args) => {});
    */
