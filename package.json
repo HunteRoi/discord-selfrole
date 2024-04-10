@@ -1,6 +1,6 @@
 {
   "name": "@hunteroi/discord-selfrole",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "A framework to integrate a channel with a automated role-giver system inside your Discord bot built with DiscordJS",
   "main": "lib/index.js",
   "scripts": {
@@ -31,11 +31,12 @@
     "discord.js": "14.x"
   },
   "devDependencies": {
-    "@types/node": "^18.11.9",
-    "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0",
-    "typedoc": "^0.23.21",
-    "typescript": "^4.8.4"
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^20.12.7",
+    "eslint": "^9.0.0",
+    "typedoc": "^0.25.13",
+    "typescript": "^5.4.4",
+    "typescript-eslint": "^7.6.0"
   },
   "directories": {
     "lib": "lib"
