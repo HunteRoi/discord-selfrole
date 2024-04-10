@@ -1,12 +1,12 @@
 import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  EmbedBuilder,
-  MessageCreateOptions,
-} from 'discord.js';
+    type ActionRowBuilder,
+    type ButtonBuilder,
+    EmbedBuilder,
+    type MessageCreateOptions,
+} from "discord.js";
 
-import { isNullOrWhiteSpaces } from './StringUtils';
-import { ChannelOptions, RoleToEmojiData } from '../types';
+import type { ChannelOptions, RoleToEmojiData } from "../types";
+import { isNullOrWhiteSpaces } from "./StringUtils";
 
 /**
  * Generates a {@link MessageOptions}.
@@ -17,11 +17,11 @@ import { ChannelOptions, RoleToEmojiData } from '../types';
  * @return {*}  {MessageOptions}
  */
 export function constructMessageOptions(
-  channelOptions: ChannelOptions,
-  actionRowBuilders?: ActionRowBuilder<ButtonBuilder>[],
+    channelOptions: ChannelOptions,
+    actionRowBuilders?: ActionRowBuilder<ButtonBuilder>[],
 ): MessageCreateOptions {
-  const content = generateContent(channelOptions);
-  return buildMessage(content, actionRowBuilders);
+    const content = generateContent(channelOptions);
+    return buildMessage(content, actionRowBuilders);
 }
 
 /**
@@ -32,14 +32,14 @@ export function constructMessageOptions(
  * @returns The message to send
  */
 function buildMessage(
-  content: string | EmbedBuilder,
-  actionRowBuilders?: ActionRowBuilder<ButtonBuilder>[],
+    content: string | EmbedBuilder,
+    actionRowBuilders?: ActionRowBuilder<ButtonBuilder>[],
 ): MessageCreateOptions {
-  return {
-    components: actionRowBuilders ? actionRowBuilders : [],
-    embeds: content instanceof EmbedBuilder ? [content] : [],
-    content: content instanceof EmbedBuilder ? undefined : content,
-  };
+    return {
+        components: actionRowBuilders ? actionRowBuilders : [],
+        embeds: content instanceof EmbedBuilder ? [content] : [],
+        content: content instanceof EmbedBuilder ? undefined : content,
+    };
 }
 
 /**
@@ -49,17 +49,17 @@ function buildMessage(
  * @returns
  */
 function generateContent(
-  channelOptions: ChannelOptions,
+    channelOptions: ChannelOptions,
 ): EmbedBuilder | string {
-  const description = generateDescription(channelOptions);
+    const description = generateDescription(channelOptions);
 
-  if (channelOptions.message.options.sendAsEmbed) {
-    return new EmbedBuilder(channelOptions.message.options)
-      .setDescription(description)
-      .setTimestamp();
-  }
+    if (channelOptions.message.options.sendAsEmbed) {
+        return new EmbedBuilder(channelOptions.message.options)
+            .setDescription(description)
+            .setTimestamp();
+    }
 
-  return description;
+    return description;
 }
 
 /**
@@ -70,31 +70,31 @@ function generateContent(
  * @returns {string}
  */
 function generateDescription(
-  channelOptions: ChannelOptions,
-  separator: string = '\n',
+    channelOptions: ChannelOptions,
+    separator = "\n",
 ): string {
-  const stringBuilder: string[] = [];
-  const {
-    descriptionPrefix: prefix,
-    descriptionSuffix: suffix,
-    format,
-  } = channelOptions.message.options;
+    const stringBuilder: string[] = [];
+    const {
+        descriptionPrefix: prefix,
+        descriptionSuffix: suffix,
+        format,
+    } = channelOptions.message.options;
 
-  if (!isNullOrWhiteSpaces(prefix)) {
-    stringBuilder.push(prefix);
-  }
+    if (!isNullOrWhiteSpaces(prefix)) {
+        stringBuilder.push(prefix);
+    }
 
-  if (channelOptions.message.options.description) {
-    stringBuilder.push(channelOptions.message.options.description);
-  }
+    if (channelOptions.message.options.description) {
+        stringBuilder.push(channelOptions.message.options.description);
+    }
 
-  channelOptions.rolesToEmojis.forEach((rte: RoleToEmojiData) =>
-    stringBuilder.push(format(rte)),
-  );
+    for (const rte of channelOptions.rolesToEmojis) {
+        stringBuilder.push(format(rte));
+    }
 
-  if (!isNullOrWhiteSpaces(suffix)) {
-    stringBuilder.push(suffix);
-  }
+    if (!isNullOrWhiteSpaces(suffix)) {
+        stringBuilder.push(suffix);
+    }
 
-  return stringBuilder.join(separator);
+    return stringBuilder.join(separator);
 }
