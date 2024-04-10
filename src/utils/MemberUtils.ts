@@ -8,7 +8,7 @@ import { GuildMember, Role, RoleResolvable } from 'discord.js';
  */
 async function removeRole(
   member: GuildMember,
-  role: RoleResolvable
+  role: RoleResolvable,
 ): Promise<GuildMember | null> {
   const roleId = role instanceof Role ? role.id : role;
   if (member.roles.cache.has(roleId)) return member.roles.remove(role);
@@ -23,7 +23,7 @@ async function removeRole(
  */
 async function addRole(
   member: GuildMember,
-  role: RoleResolvable
+  role: RoleResolvable,
 ): Promise<GuildMember | null> {
   const roleId = role instanceof Role ? role.id : role;
   if (!member.roles.cache.has(roleId)) return member.roles.add(role);

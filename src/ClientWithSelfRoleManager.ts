@@ -27,11 +27,11 @@ export class ClientWithSelfRoleManager extends Client {
    *   }]
    */
   constructor(
-    options?: ClientOptions,
+    options: ClientOptions,
     selfRoleOptions: SelfRoleOptions = {
       deleteAfterUnregistration: false,
       channelsMessagesFetchLimit: 3,
-    }
+    },
   ) {
     super(options);
 

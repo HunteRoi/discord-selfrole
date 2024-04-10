@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   TextChannel,
   Message,
   Role,
   ButtonInteraction,
   GuildMember,
-  RoleResolvable
+  RoleResolvable,
 } from 'discord.js';
 import type { ChannelOptions, RoleToEmojiData } from './types';
 import type { UserAction } from './types/UserAction';
+/* eslint-enable @typescript-eslint/no-unused-vars */
 
 export enum SelfRoleManagerEvents {
   /**

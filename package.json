@@ -1,39 +1,13 @@
 {
-  "name": "@hunteroi/discord-selfrole",
-  "type": "module",
-  "version": "3.2.1",
-  "description": "A framework to integrate a channel with a automated role-giver system inside your Discord bot built with DiscordJS",
-  "main": "lib/index.js",
-  "scripts": {
-    "build": "tsc",
-    "build:docs": "typedoc",
-    "prepublish": "yarn build:docs",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\" \"examples/**/*.ts\" \"examples/**/*.js\" ",
-    "lint": "eslint ./src",
-    "start": "yarn build & node ./examples/index.js"
-  },
-  "repository": "git://github.com/hunteroi/discord-selfrole.git",
-  "keywords": [
-    "selfrole",
-    "discordjs",
-    "roleme"
-  ],
   "author": "HunteRoi <me@tinaeldevresse.eu> (https://tinaeldevresse.eu/)",
-  "funding": "https://github.com/sponsors/hunteroi",
-  "engines": {
-    "node": ">=16.6.0"
-  },
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/hunteroi/discord-selfrole/issues"
   },
-  "homepage": "https://github.com/hunteroi/discord-selfrole#readme",
-  "dependencies": {
-    "discord.js": "14.x"
-  },
+  "description": "A framework to integrate a channel with a automated role-giver system inside your Discord bot built with DiscordJS",
   "devDependencies": {
     "@eslint/js": "^9.0.0",
     "@types/node": "^20.12.7",
+    "discord.js": "^14.14.1",
     "eslint": "^9.0.0",
     "typedoc": "^0.25.13",
     "typescript": "^5.4.4",
@@ -42,7 +16,33 @@
   "directories": {
     "lib": "lib"
   },
+  "engines": {
+    "node": ">=20.x"
+  },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "funding": "https://github.com/sponsors/hunteroi",
+  "homepage": "https://github.com/hunteroi/discord-selfrole#readme",
+  "keywords": [
+    "selfrole",
+    "discordjs",
+    "roleme"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "name": "@hunteroi/discord-selfrole",
+  "peerDependencies": {
+    "discord.js": "14.x"
+  },
+  "repository": "git://github.com/hunteroi/discord-selfrole.git",
+  "scripts": {
+    "build": "tsc",
+    "build:docs": "typedoc",
+    "lint": "eslint ./src",
+    "prepublish": "yarn lint && yarn build && yarn build:docs",
+    "start": "yarn build & node ./examples/index.js"
+  },
+  "type": "module",
+  "version": "3.2.2"
 }
