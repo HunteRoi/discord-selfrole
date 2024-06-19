@@ -1,7 +1,7 @@
 import { Client, type ClientOptions } from "discord.js";
 
-import { SelfRoleManager } from "./SelfRoleManager";
-import type { SelfRoleOptions } from "./types";
+import { SelfRoleManager } from "./SelfRoleManager.js";
+import type { SelfRoleOptions } from "./types/index.js";
 
 /**
  * A wrapper of {@link Client} that provides a support for the SelfRoleManager.

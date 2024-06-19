@@ -25,19 +25,19 @@ import {
     type User,
 } from "discord.js";
 
-import { SelfRoleManagerEvents } from "./SelfRoleManagerEvents";
+import { SelfRoleManagerEvents } from "./SelfRoleManagerEvents.js";
 import type {
     ChannelOptions,
     ChannelProperties,
     RoleToEmojiData,
     SelfRoleOptions,
-} from "./types";
+} from "./types/index.js";
 import {
     addRole,
     constructMessageOptions,
     isNullOrWhiteSpaces,
     removeRole,
-} from "./utils";
+} from "./utils/index.js";
 
 const packagePrefix: string = "sr-";
 

@@ -5,8 +5,8 @@ import {
     type MessageCreateOptions,
 } from "discord.js";
 
-import type { ChannelOptions, RoleToEmojiData } from "../types";
-import { isNullOrWhiteSpaces } from "./StringUtils";
+import type { ChannelOptions } from "../types/index.js";
+import { isNullOrWhiteSpaces } from "./StringUtils.js";
 
 /**
  * Generates a {@link MessageOptions}.

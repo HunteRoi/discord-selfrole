@@ -1,7 +1,7 @@
 import type { Snowflake } from "discord.js";
 
-import type { MessageOptions } from "./MessageOptions";
-import type { RoleToEmojiData } from "./RoleToEmojiData";
+import type { MessageOptions } from "./MessageOptions.js";
+import type { RoleToEmojiData } from "./RoleToEmojiData.js";
 
 /**
  *

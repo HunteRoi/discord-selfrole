@@ -1,3 +1,3 @@
-export * from "./MemberUtils";
-export * from "./MessageUtils";
-export * from "./StringUtils";
+export * from "./MemberUtils.js";
+export * from "./MessageUtils.js";
+export * from "./StringUtils.js";

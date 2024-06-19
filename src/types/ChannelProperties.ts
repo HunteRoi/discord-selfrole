@@ -1,5 +1,6 @@
 import type { GuildMember, PartialGuildMember } from "discord.js";
-import type { ChannelOptions } from "./ChannelOptions";
+
+import type { ChannelOptions } from "./ChannelOptions.js";
 
 /**
  *

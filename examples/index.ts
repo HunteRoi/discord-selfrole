@@ -1,11 +1,6 @@
-const {
-  Client,
-  Role,
-  IntentsBitField,
-  ButtonInteraction,
-  roleMention,
-} = require('discord.js');
-const { SelfRoleManager } = require('../lib');
+import { ButtonInteraction, Client, IntentsBitField, Role, roleMention } from 'discord.js';
+
+import { SelfRoleManager } from '../lib/index.js';
 
 const client = new Client({
   intents: [
@@ -19,6 +14,7 @@ const client = new Client({
 const manager = new SelfRoleManager(client, {
   deleteAfterUnregistration: true,
   useReactions: false,
+  channelsMessagesFetchLimit: 3
 });
 
 client.on('ready', async () => {
@@ -73,9 +69,10 @@ client.on('ready', async () => {
 
 client.on(
   'messageCreate',
-  async (message) =>
-    message.cleanContent === 'unregisterChannel' &&
-    (await manager.unregisterChannel('CHANNEL_ID')),
+  async (message) => {
+    if (message.cleanContent === 'unregisterChannel')
+      await manager.unregisterChannel('CHANNEL_ID');
+  }
 );
 
 manager.on('channelRegister', (channel, options) =>

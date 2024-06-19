@@ -1,6 +1,6 @@
 import type { EmbedData } from "discord.js";
 
-import type { RoleToEmojiData } from "./RoleToEmojiData";
+import type { RoleToEmojiData } from "./RoleToEmojiData.js";
 
 /**
  *
