@@ -1,6 +1,6 @@
-import { EmbedData } from 'discord.js';
+import type { EmbedData } from "discord.js";
 
-import { RoleToEmojiData } from './RoleToEmojiData';
+import type { RoleToEmojiData } from "./RoleToEmojiData.js";
 
 /**
  *
@@ -8,31 +8,31 @@ import { RoleToEmojiData } from './RoleToEmojiData';
  * @interface MessageOptions
  */
 export interface MessageOptions extends EmbedData {
-  /**
-   * Whether the message should be sent as an embed or not.
-   *
-   * @type {boolean}
-   */
-  sendAsEmbed: boolean;
+    /**
+     * Whether the message should be sent as an embed or not.
+     *
+     * @type {boolean}
+     */
+    sendAsEmbed: boolean;
 
-  /**
-   * The description suffix added to each message.
-   *
-   * @type {string}
-   */
-  descriptionSuffix?: string;
+    /**
+     * The description suffix added to each message.
+     *
+     * @type {string}
+     */
+    descriptionSuffix?: string;
 
-  /**
-   * The description prefix added to each message.
-   *
-   * @type {string}
-   */
-  descriptionPrefix?: string;
+    /**
+     * The description prefix added to each message.
+     *
+     * @type {string}
+     */
+    descriptionPrefix?: string;
 
-  /**
-   * A description resolver method for a role-emoji pair.
-   *
-   * @memberof MessageOptions
-   */
-  format: (rte: RoleToEmojiData) => string;
+    /**
+     * A description resolver method for a role-emoji pair.
+     *
+     * @memberof MessageOptions
+     */
+    format: (rte: RoleToEmojiData) => string;
 }

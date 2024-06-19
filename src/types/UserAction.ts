@@ -1,3 +1,11 @@
-import { ButtonInteraction, MessageReaction, PartialMessageReaction } from "discord.js";
+import type {
+    ButtonInteraction,
+    MessageReaction,
+    PartialMessageReaction,
+} from "discord.js";
 
-export type UserAction = ButtonInteraction | MessageReaction | PartialMessageReaction | null;
+export type UserAction =
+    | ButtonInteraction
+    | MessageReaction
+    | PartialMessageReaction
+    | null;

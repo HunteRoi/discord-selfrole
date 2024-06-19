@@ -1,4 +1,4 @@
-import { GuildMember, Role, RoleResolvable } from 'discord.js';
+import { type GuildMember, Role, type RoleResolvable } from "discord.js";
 
 /**
  * Remove a role from a guild member.
@@ -7,12 +7,12 @@ import { GuildMember, Role, RoleResolvable } from 'discord.js';
  * @param {RoleResolvable} role
  */
 async function removeRole(
-  member: GuildMember,
-  role: RoleResolvable
+    member: GuildMember,
+    role: RoleResolvable,
 ): Promise<GuildMember | null> {
-  const roleId = role instanceof Role ? role.id : role;
-  if (member.roles.cache.has(roleId)) return member.roles.remove(role);
-  return null;
+    const roleId = role instanceof Role ? role.id : role;
+    if (member.roles.cache.has(roleId)) return member.roles.remove(role);
+    return null;
 }
 
 /**
@@ -22,12 +22,12 @@ async function removeRole(
  * @param {RoleResolvable} role
  */
 async function addRole(
-  member: GuildMember,
-  role: RoleResolvable
+    member: GuildMember,
+    role: RoleResolvable,
 ): Promise<GuildMember | null> {
-  const roleId = role instanceof Role ? role.id : role;
-  if (!member.roles.cache.has(roleId)) return member.roles.add(role);
-  return null;
+    const roleId = role instanceof Role ? role.id : role;
+    if (!member.roles.cache.has(roleId)) return member.roles.add(role);
+    return null;
 }
 
 export { removeRole, addRole };
