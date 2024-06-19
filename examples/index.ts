@@ -106,14 +106,14 @@ manager.on('roleRemove', async (role, member, userAction) => {
   userAction &&
     userAction instanceof ButtonInteraction &&
     (await userAction.editReply({
-      content: `Your old role ${role} has been removed from you.`,
+      content: `Your old role ${role.name} has been removed from you.`,
     }));
 });
 manager.on('roleAdd', async (role, member, userAction) => {
   console.log(`Role ${role} given to ${member.displayName}`);
   userAction instanceof ButtonInteraction &&
     (await userAction.editReply({
-      content: `The new role ${role} has been added to you.`,
+      content: `The new role ${role.name} has been added to you.`,
     }));
 });
 manager.on('reactionAdd', (rte, message) =>
@@ -130,7 +130,7 @@ manager.on(
     );
     userAction instanceof ButtonInteraction &&
       (await userAction.editReply({
-        content: `You reached or exceed the maximum number of roles (${nbRoles}/${maxRoles})! You cannot get ${role}.`,
+        content: `You reached or exceed the maximum number of roles (${nbRoles}/${maxRoles})! You cannot get ${role.name}.`,
       }));
   },
 );
@@ -143,12 +143,12 @@ manager.on(
   'requiredRolesMissing',
   async (member, userAction, role, dependencies) => {
     console.log(
-      `${member.displayName} doesn't have the required roles to get the role ${role}!`,
+      `${member.displayName} doesn't have the required roles to get the role ${role.name}!`,
       dependencies,
     );
     userAction instanceof ButtonInteraction &&
       (await userAction.editReply({
-        content: `${member.displayName} doesn't have the required roles to get the role ${role}!`,
+        content: `${member.displayName} doesn't have the required roles to get the role ${role.name}!`,
       }));
   },
 );
