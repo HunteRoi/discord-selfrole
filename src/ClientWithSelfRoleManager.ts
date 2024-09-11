@@ -1,13 +1,20 @@
 import { Client, type ClientOptions } from "discord.js";
 
-import { SelfRoleManager } from "./SelfRoleManager.js";
-import type { SelfRoleOptions } from "./types/index.js";
+import { InteractionsSelfRoleManager } from "./InteractionsSelfRoleManager.js";
+import { ReactionsSelfRoleManager } from "./ReactionsSelfRoleManager.js";
+import type { SelfRoleManager } from "./SelfRoleManager.js";
+import type {
+    InteractionsSelfRoleOptions,
+    ReactionsSelfRoleOptions,
+    SelfRoleOptions,
+} from "./types/index.js";
 
 /**
  * A wrapper of {@link Client} that provides a support for the SelfRoleManager.
  * @export
  * @class ClientWithSelfRoleManager
  * @extends {Client}
+ * @deprecated Use {@link InteractionsSelfRoleManager} instead.
  */
 export class ClientWithSelfRoleManager extends Client {
     /**
@@ -23,7 +30,8 @@ export class ClientWithSelfRoleManager extends Client {
      * @param {ClientOptions} [options] Options for the client
      * @param {SelfRoleOptions} [selfRoleOptions={
      *     deleteAfterUnregistration: false
-     *     channelsMessagesFetchLimit: 3
+     *     channelsMessagesFetchLimit: 3,
+     *     useReactions: false
      *   }]
      */
     constructor(
@@ -32,9 +40,18 @@ export class ClientWithSelfRoleManager extends Client {
             deleteAfterUnregistration: false,
             channelsMessagesFetchLimit: 3,
         },
+        useReactions = false,
     ) {
         super(options);
 
-        this.selfRoleManager = new SelfRoleManager(this, selfRoleOptions);
+        this.selfRoleManager = useReactions
+            ? new ReactionsSelfRoleManager(this, {
+                  ...selfRoleOptions,
+                  useReactions,
+              } as ReactionsSelfRoleOptions)
+            : new InteractionsSelfRoleManager(this, {
+                  ...selfRoleOptions,
+                  useReactions,
+              } as InteractionsSelfRoleOptions);
     }
 }

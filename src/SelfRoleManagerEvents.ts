@@ -80,6 +80,7 @@ export enum SelfRoleManagerEvents {
      * @event SelfRoleManager#reactionAdd
      * @param {RoleToEmojiData} rte The role to emoji data
      * @param {Message} message The message
+     * @deprecated
      * @example
      * manager.on(SelfRoleManagerEvents.reactionAdd, (rte, message) => {});
      */
@@ -89,6 +90,7 @@ export enum SelfRoleManagerEvents {
      * @event SelfRoleManager#reactionRemove
      * @param {RoleToEmojiData} rte The role to emoji data
      * @param {Message} message The message
+     * @deprecated
      * @example
      * manager.on(SelfRoleManagerEvents.reactionRemove, (rte, message) => {});
      */

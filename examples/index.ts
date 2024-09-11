@@ -1,6 +1,6 @@
 import { ButtonInteraction, Client, IntentsBitField, Role, roleMention } from 'discord.js';
 
-import { SelfRoleManager } from '../lib/index.js';
+import { InteractionsSelfRoleManager } from '../lib/index.js';
 
 const client = new Client({
   intents: [
@@ -11,9 +11,8 @@ const client = new Client({
     IntentsBitField.Flags.GuildMessageReactions,
   ],
 });
-const manager = new SelfRoleManager(client, {
+const manager = new InteractionsSelfRoleManager(client, {
   deleteAfterUnregistration: true,
-  useReactions: false,
   channelsMessagesFetchLimit: 3
 });
 
@@ -116,12 +115,6 @@ manager.on('roleAdd', async (role, member, userAction) => {
       content: `The new role ${role.name} has been added to you.`,
     }));
 });
-manager.on('reactionAdd', (rte, message) =>
-  console.log(`${rte.emoji} added to ${message.id}`),
-);
-manager.on('reactionRemove', (rte, message) =>
-  console.log(`${rte.emoji} removed from ${message.id}`),
-);
 manager.on(
   'maxRolesReach',
   async (member, userAction, nbRoles, maxRoles, role) => {
