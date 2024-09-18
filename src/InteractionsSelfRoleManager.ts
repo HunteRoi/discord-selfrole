@@ -256,7 +256,7 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
     protected async handleUserAction(
         userAction: ButtonInteraction | StringSelectMenuInteraction,
     ): Promise<void> {
-        if (!userAction.guild) return;
+        if (!userAction.inGuild()) return;
 
         const message = userAction.message;
         if (!message || message.author?.id !== this.client.user?.id) return;

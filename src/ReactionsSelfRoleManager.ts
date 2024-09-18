@@ -120,7 +120,7 @@ export class ReactionsSelfRoleManager extends SelfRoleManager {
         user: User | PartialUser,
         isReactionRemoval: boolean,
     ): Promise<void> {
-        if (!userAction.message.guild) return;
+        if (!userAction.message.inGuild()) return;
 
         const message = userAction.message;
         if (!message || message.author?.id !== this.client.user?.id) return;
