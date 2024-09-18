@@ -162,7 +162,7 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
                         new StringSelectMenuBuilder({
                             min_values: minValues,
                             max_values: maxValues,
-                            custom_id: `${packagePrefix}${selectMenuPrefix}roles`,
+                            custom_id: `${packagePrefix}${selectMenuPrefix}roles-${channel.id}`,
                             placeholder:
                                 channelOptions.selectMenu?.placeholder ??
                                 "Select a role",
@@ -183,7 +183,7 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
                     new ActionRowBuilder<ButtonBuilder>().addComponents(
                         new ButtonBuilder()
                             .setCustomId(
-                                `${packagePrefix}${selectMenuPrefix}reset`,
+                                `${packagePrefix}${selectMenuPrefix}reset-${channel.id}`,
                             )
                             .setEmoji(
                                 channelOptions.selectMenu.resetButton
