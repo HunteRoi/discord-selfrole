@@ -1,4 +1,4 @@
-import { ButtonStyle, Client, IntentsBitField, Role, roleMention } from 'discord.js';
+import { ButtonInteraction, ButtonStyle, Client, IntentsBitField, Role, StringSelectMenuInteraction, roleMention } from 'discord.js';
 
 import { InteractionsSelfRoleManager } from '../lib/index.js';
 
@@ -114,8 +114,8 @@ manager.on('interaction', async (rte, interaction) => {
 manager.on('roleRemove', async (role, member, userAction) => {
   console.log(`Role ${role.name} ${userAction ? '' : 'automatically '}removed from ${member.displayName}`);
 
-  if (userAction) {
-    await userAction.followUp({
+  if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
+    userAction.followUp && await userAction.followUp({
       content: `Your old role ${role} has been removed from you.`,
       ephemeral: true
     });
@@ -124,7 +124,7 @@ manager.on('roleRemove', async (role, member, userAction) => {
 manager.on('roleAdd', async (role, member, userAction) => {
   console.log(`Role ${role.name} given to ${member.displayName}`);
 
-  if (userAction) {
+  if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
     await userAction.followUp({
       content: `The new role ${role} has been added to you.`,
       ephemeral: true
@@ -136,7 +136,7 @@ manager.on(
   async (member, userAction, nbRoles, maxRoles, role) => {
     console.log(`${member.displayName} has reached or exceeded the max roles (${nbRoles}/${maxRoles})! Role ${role.name} cannot be given.`);
 
-    if (userAction) {
+    if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
       await userAction.followUp({
         content: `You reached or exceed the maximum number of roles (${nbRoles}/${maxRoles})! You cannot get ${role}.`,
         ephemeral: true
@@ -149,7 +149,7 @@ manager.on(
   async (member, userAction, role, dependencies) => {
     console.log(`${member.displayName} doesn't have the required roles to get the role ${role.name}!`, dependencies);
 
-    if (userAction) {
+    if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
       await userAction.followUp({
         content: `You don't have the required roles to get the role ${role}!`,
         ephemeral: true
