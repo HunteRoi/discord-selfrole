@@ -42,5 +42,5 @@
     "start": "yarn build && tsc ./examples/index.ts --target esnext --module nodenext --moduleResolution nodenext && node ./examples/index.js"
   },
   "type": "module",
-  "version": "4.0.3"
+  "version": "4.0.4"
 }

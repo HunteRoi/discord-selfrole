@@ -217,11 +217,11 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
                     )
                     .map((rteData: RoleToEmojiData[]) =>
                         new ActionRowBuilder<ButtonBuilder>().addComponents(
-                            ...rteData.map((rte: RoleToEmojiData, index: number) =>
+                            ...rteData.map((rte: RoleToEmojiData) =>
                                 new ButtonBuilder()
                                     .setEmoji(rte.emoji.toString())
                                     .setCustomId(
-                                        `${packagePrefix}${buttonPrefix}${roles[index]?.id ?? rte.role.toString()}`,
+                                        `${packagePrefix}${buttonPrefix}${rte.role instanceof Role ? rte.role.id : rte.role}`,
                                     )
                                     .setStyle(ButtonStyle.Secondary),
                             ),
