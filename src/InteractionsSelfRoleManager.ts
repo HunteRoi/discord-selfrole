@@ -134,6 +134,13 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
                 0,
                 MAX_VALUES,
             ); // Discord only allows 25 options in a select menu
+            const roles = await Promise.all(
+                clippedRolesToEmojis.map(async (clippedRoleToEmoji) =>
+                    clippedRoleToEmoji.role instanceof Role
+                        ? clippedRoleToEmoji.role
+                        : await channel.guild.roles.fetch(clippedRoleToEmoji.role)
+                )
+            );
             const minValues = channelOptions.selectMenu?.minValues
                 ? Math.min(
                     Math.max(1, channelOptions.selectMenu.minValues),
@@ -160,21 +167,17 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
                                 channelOptions.selectMenu?.placeholder ??
                                 "Select a role",
                         }).addOptions(
-                            clippedRolesToEmojis.map((rte: RoleToEmojiData) =>
-                                new StringSelectMenuOptionBuilder()
+                            clippedRolesToEmojis.map((rte: RoleToEmojiData, index: number) => {
+                                return new StringSelectMenuOptionBuilder()
                                     .setEmoji(rte.emoji.toString())
                                     .setLabel(
-                                        rte.role instanceof Role
-                                            ? rte.role.name
-                                            : rte.role,
+                                        roles[index]?.name ?? rte.role.toString(),
                                     )
                                     .setValue(
-                                        rte.role instanceof Role
-                                            ? rte.role.id
-                                            : rte.role,
+                                        roles[index]?.id ?? rte.role.toString()
                                     )
-                                    .setDescription(rte.smallNote ?? " "),
-                            ),
+                                    .setDescription(rte.smallNote ?? " ");
+                            }),
                         ),
                     ),
                     new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -214,14 +217,11 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
                     )
                     .map((rteData: RoleToEmojiData[]) =>
                         new ActionRowBuilder<ButtonBuilder>().addComponents(
-                            ...rteData.map((rte: RoleToEmojiData) =>
+                            ...rteData.map((rte: RoleToEmojiData, index: number) =>
                                 new ButtonBuilder()
                                     .setEmoji(rte.emoji.toString())
                                     .setCustomId(
-                                        `${packagePrefix}${buttonPrefix}${rte.role instanceof Role
-                                            ? rte.role.id
-                                            : rte.role
-                                        }`,
+                                        `${packagePrefix}${buttonPrefix}${roles[index]?.id ?? rte.role.toString()}`,
                                     )
                                     .setStyle(ButtonStyle.Secondary),
                             ),
@@ -338,14 +338,6 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
             );
             return;
         }
-
-        const rolesFromEmojis = channelOptions.rolesToEmojis.map(
-            (rte: RoleToEmojiData) => rte.role,
-        );
-        const memberRoles = [...member.roles.cache.values()];
-        const memberManagedRoles = memberRoles.filter((role: Role) =>
-            rolesFromEmojis.includes(role.id),
-        );
 
         this.emit(SelfRoleManagerEvents.interaction, rteData, userAction);
         await this.#manageUserRoles(userAction, channelOptions, role, rteData);
