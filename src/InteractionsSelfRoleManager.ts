@@ -412,7 +412,6 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
         );
         this.emit(SelfRoleManagerEvents.interaction, rteData, userAction);
 
-        // TODO: make it more efficient (too much filtering, too much loop, too much array creation)
         const memberRoles = [...member.roles.cache.values()];
         const memberManagedRoles = memberRoles.filter((role: Role) =>
             rolesFromEmojis.includes(role.id),
@@ -512,13 +511,6 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
         const userWantsToAddRole = !memberHasRole;
         const userWantsToRemoveRole = memberHasRole;
 
-        console.log(
-            memberRoles.map((r) => r.id),
-            userWantsToAddRole,
-            maxRolesReached,
-            userHasRequiredRoles,
-            userWantsToRemoveRole,
-        );
         switch (true) {
             case userWantsToAddRole && maxRolesReached:
                 await this.userHasReachedMaxRoles(
