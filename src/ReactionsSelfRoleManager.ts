@@ -84,11 +84,8 @@ export class ReactionsSelfRoleManager extends SelfRoleManager {
                 message.reactions.cache.size > 0,
         );
 
-        let message: Message | undefined;
-        const channelAlreadyContainsMessages =
-            selfRoleBotMessages && selfRoleBotMessages.size > 0;
-        if (channelAlreadyContainsMessages) {
-            message = selfRoleBotMessages.first();
+        let message: Message | undefined = selfRoleBotMessages.first();
+        if (message && [...message.reactions.cache.values()].length > 0) {
             this.emit(SelfRoleManagerEvents.messageRetrieve, message);
         } else {
             const messageOptions = constructMessageOptions(channelOptions, []);
@@ -195,8 +192,8 @@ export class ReactionsSelfRoleManager extends SelfRoleManager {
                 r instanceof Role
                     ? memberRoles.includes(r)
                     : memberRoles
-                          .map((memberRole: Role) => memberRole.id)
-                          .includes(r),
+                        .map((memberRole: Role) => memberRole.id)
+                        .includes(r),
             ) ?? true;
 
         switch (true) {
