@@ -1,19 +1,17 @@
-import { ButtonInteraction, Client, IntentsBitField, Role, roleMention } from 'discord.js';
+import { ButtonInteraction, ButtonStyle, Client, IntentsBitField, Role, StringSelectMenuInteraction, roleMention } from 'discord.js';
 
-import { SelfRoleManager } from '../lib/index.js';
+import { InteractionsSelfRoleManager } from '../lib/index.js';
 
 const client = new Client({
   intents: [
-    IntentsBitField.Flags.MessageContent,
     IntentsBitField.Flags.Guilds,
     IntentsBitField.Flags.GuildMembers,
     IntentsBitField.Flags.GuildMessages,
-    IntentsBitField.Flags.GuildMessageReactions,
+    IntentsBitField.Flags.MessageContent,
   ],
 });
-const manager = new SelfRoleManager(client, {
+const manager = new InteractionsSelfRoleManager(client, {
   deleteAfterUnregistration: true,
-  useReactions: false,
   channelsMessagesFetchLimit: 3
 });
 
@@ -31,13 +29,12 @@ client.on('ready', async () => {
       {
         emoji: '3️⃣',
         role: 'ROLE_ID',
-        removeOnReact: true,
-        smallNote: 'removes on reaction',
       },
       {
         emoji: '<:EMOJI_NAME:EMOJI_ID>',
         role: 'ROLE_ID',
         requiredRoles: ['OTHER_ROLE_ID'],
+        smallNote: 'check for required roles first'
       },
       {
         emoji: '4⃣',
@@ -62,6 +59,16 @@ client.on('ready', async () => {
       },
     },
     maxRolesAssigned: 4,
+    selectMenu: {
+      minValues: 1,
+      maxValues: 25,
+      placeholder: 'Select your new roles!!',
+      resetButton: {
+        label: 'Remove all roles',
+        style: ButtonStyle.Secondary,
+        emoji: '🗑️',
+      },
+    }
   });
 
   console.log('Connected!');
@@ -99,58 +106,56 @@ manager.on('messageCreate', (message) =>
 manager.on('messageDelete', (message) =>
   console.log(`Message ${message.id} deleted!`),
 );
+manager.on('interaction', async (rte, interaction) => {
+  console.log(`An interaction has been made by ${interaction.member.displayName}!`);
+  interaction.isButton() && await interaction.editReply("You interacted with a button!");
+  interaction.isStringSelectMenu() && await interaction.editReply("You interacted with a menu!");
+});
 manager.on('roleRemove', async (role, member, userAction) => {
-  console.log(
-    `Role ${role} ${userAction ? '' : 'automatically '}removed from ${member.displayName}`,
-  );
-  userAction &&
-    userAction instanceof ButtonInteraction &&
-    (await userAction.editReply({
-      content: `Your old role ${role.name} has been removed from you.`,
-    }));
+  console.log(`Role ${role.name} ${userAction ? '' : 'automatically '}removed from ${member.displayName}`);
+
+  if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
+    userAction.followUp && await userAction.followUp({
+      content: `Your old role ${role} has been removed from you.`,
+      ephemeral: true
+    });
+  }
 });
 manager.on('roleAdd', async (role, member, userAction) => {
-  console.log(`Role ${role} given to ${member.displayName}`);
-  userAction instanceof ButtonInteraction &&
-    (await userAction.editReply({
-      content: `The new role ${role.name} has been added to you.`,
-    }));
+  console.log(`Role ${role.name} given to ${member.displayName}`);
+
+  if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
+    await userAction.followUp({
+      content: `The new role ${role} has been added to you.`,
+      ephemeral: true
+    });
+  }
 });
-manager.on('reactionAdd', (rte, message) =>
-  console.log(`${rte.emoji} added to ${message.id}`),
-);
-manager.on('reactionRemove', (rte, message) =>
-  console.log(`${rte.emoji} removed from ${message.id}`),
-);
 manager.on(
   'maxRolesReach',
   async (member, userAction, nbRoles, maxRoles, role) => {
-    console.log(
-      `${member.displayName} has reached or exceeded the max roles (${nbRoles}/${maxRoles})!`,
-    );
-    userAction instanceof ButtonInteraction &&
-      (await userAction.editReply({
-        content: `You reached or exceed the maximum number of roles (${nbRoles}/${maxRoles})! You cannot get ${role.name}.`,
-      }));
-  },
-);
-manager.on('interaction', (rte, interaction) =>
-  console.log(
-    `An interaction has been made by ${interaction.member.displayName}`,
-  ),
+    console.log(`${member.displayName} has reached or exceeded the max roles (${nbRoles}/${maxRoles})! Role ${role.name} cannot be given.`);
+
+    if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
+      await userAction.followUp({
+        content: `You reached or exceed the maximum number of roles (${nbRoles}/${maxRoles})! You cannot get ${role}.`,
+        ephemeral: true
+      });
+    }
+  }
 );
 manager.on(
   'requiredRolesMissing',
   async (member, userAction, role, dependencies) => {
-    console.log(
-      `${member.displayName} doesn't have the required roles to get the role ${role.name}!`,
-      dependencies,
-    );
-    userAction instanceof ButtonInteraction &&
-      (await userAction.editReply({
-        content: `${member.displayName} doesn't have the required roles to get the role ${role.name}!`,
-      }));
-  },
+    console.log(`${member.displayName} doesn't have the required roles to get the role ${role.name}!`, dependencies);
+
+    if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
+      await userAction.followUp({
+        content: `You don't have the required roles to get the role ${role}!`,
+        ephemeral: true
+      });
+    }
+  }
 );
 
 client.login('TOKEN');

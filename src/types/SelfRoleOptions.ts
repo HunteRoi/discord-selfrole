@@ -1,4 +1,24 @@
 /**
+ * The options for the interactions-based self-role manager.
+ *
+ * @exports
+ * @extends SelfRoleOptions
+ */
+export type InteractionsSelfRoleOptions = SelfRoleOptions & {
+    useReactions?: false;
+};
+
+/**
+ * The options for the reactions-based self-role manager.
+ *
+ * @export
+ * @extends SelfRoleOptions
+ */
+export type ReactionsSelfRoleOptions = SelfRoleOptions & {
+    useReactions: true;
+};
+
+/**
  *
  * @export
  * @interface SelfRoleOptions
@@ -21,7 +41,7 @@ export interface SelfRoleOptions {
     /**
      * Whether the manager should be based on reactions or interactions.
      *
-     * @type {boolean}
+     * @type {false | true | undefined}
      */
-    useReactions?: boolean;
+    useReactions?: false | true;
 }
