@@ -41,7 +41,7 @@ export interface SelfRoleOptions {
     /**
      * Whether the manager should be based on reactions or interactions.
      *
-     * @type {false | true | null}
+     * @type {false | true | undefined}
      */
     useReactions?: false | true;
 }

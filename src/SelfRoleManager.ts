@@ -16,6 +16,7 @@ import {
     Role,
     type RoleResolvable,
     type Snowflake,
+    type StringSelectMenuInteraction,
     type TextChannel,
     type User,
 } from "discord.js";
@@ -84,6 +85,11 @@ export abstract class SelfRoleManager extends EventEmitter {
         if (!intents.has(IntentsBitField.Flags.GuildMembers)) {
             throw new Error(
                 "GUILD_MEMBERS intent is required to use this package!",
+            );
+        }
+        if (!intents.has(IntentsBitField.Flags.GuildMessages)) {
+            throw new Error(
+                "GUILD_MESSAGES intent is required to use this package!",
             );
         }
 
@@ -212,6 +218,7 @@ export abstract class SelfRoleManager extends EventEmitter {
     protected abstract handleUserAction(
         userAction:
             | ButtonInteraction
+            | StringSelectMenuInteraction
             | MessageReaction
             | PartialMessageReaction,
         user?: User | PartialUser | null,
@@ -226,11 +233,15 @@ export abstract class SelfRoleManager extends EventEmitter {
      * @returns The proper RoteToEmojiData
      */
     protected getRTE(
-        sender: ButtonInteraction | MessageReaction | PartialMessageReaction,
+        sender:
+            | ButtonInteraction
+            | StringSelectMenuInteraction
+            | MessageReaction
+            | PartialMessageReaction,
         channelOptions: ChannelOptions,
         emoji?: GuildEmoji | ReactionEmoji | APIMessageComponentEmoji | null,
-    ): RoleToEmojiData | undefined {
-        if (!emoji) return;
+    ): RoleToEmojiData | RoleToEmojiData[] | undefined {
+        if (!channelOptions || !emoji) return;
 
         const emojiIdentifier = isNullOrWhiteSpaces(emoji.id)
             ? emoji.name
@@ -264,6 +275,7 @@ export abstract class SelfRoleManager extends EventEmitter {
         member: GuildMember,
         userAction:
             | ButtonInteraction
+            | StringSelectMenuInteraction
             | MessageReaction
             | PartialMessageReaction,
         numberOfMemberManagedRoles: number,
@@ -284,6 +296,7 @@ export abstract class SelfRoleManager extends EventEmitter {
         member: GuildMember,
         userAction:
             | ButtonInteraction
+            | StringSelectMenuInteraction
             | MessageReaction
             | PartialMessageReaction,
         role: Role,
@@ -303,6 +316,7 @@ export abstract class SelfRoleManager extends EventEmitter {
         role: Role,
         userAction:
             | ButtonInteraction
+            | StringSelectMenuInteraction
             | MessageReaction
             | PartialMessageReaction,
     ) {
@@ -328,6 +342,7 @@ export abstract class SelfRoleManager extends EventEmitter {
         role: Role,
         userAction:
             | ButtonInteraction
+            | StringSelectMenuInteraction
             | MessageReaction
             | PartialMessageReaction,
     ) {

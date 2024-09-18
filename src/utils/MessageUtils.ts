@@ -3,6 +3,7 @@ import {
     type ButtonBuilder,
     EmbedBuilder,
     type MessageCreateOptions,
+    type StringSelectMenuBuilder,
 } from "discord.js";
 
 import type { ChannelOptions } from "../types/index.js";
@@ -18,7 +19,10 @@ import { isNullOrWhiteSpaces } from "./StringUtils.js";
  */
 export function constructMessageOptions(
     channelOptions: ChannelOptions,
-    actionRowBuilders?: ActionRowBuilder<ButtonBuilder>[],
+    actionRowBuilders?: (
+        | ActionRowBuilder<StringSelectMenuBuilder>
+        | ActionRowBuilder<ButtonBuilder>
+    )[],
 ): MessageCreateOptions {
     const content = generateContent(channelOptions);
     return buildMessage(content, actionRowBuilders);
@@ -33,7 +37,10 @@ export function constructMessageOptions(
  */
 function buildMessage(
     content: string | EmbedBuilder,
-    actionRowBuilders?: ActionRowBuilder<ButtonBuilder>[],
+    actionRowBuilders?: (
+        | ActionRowBuilder<StringSelectMenuBuilder>
+        | ActionRowBuilder<ButtonBuilder>
+    )[],
 ): MessageCreateOptions {
     return {
         components: actionRowBuilders ? actionRowBuilders : [],

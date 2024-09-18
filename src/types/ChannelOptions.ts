@@ -2,6 +2,7 @@ import type { Snowflake } from "discord.js";
 
 import type { MessageOptions } from "./MessageOptions.js";
 import type { RoleToEmojiData } from "./RoleToEmojiData.js";
+import type { SelectMenuOptions } from "./SelectMenuOptions.js";
 
 /**
  *
@@ -11,7 +12,7 @@ import type { RoleToEmojiData } from "./RoleToEmojiData.js";
 export interface ChannelOptions {
     /**
      * The list of role-emoji pairs to add as reactions to the message.
-     * A maximum of 25 role-emoji pairs are taken when using emoji button components.
+     * A maximum of 25 role-emoji pairs are taken when using Discord components.
      *
      * @type {RoleToEmojiData[]}
      */
@@ -43,4 +44,10 @@ export interface ChannelOptions {
      * @type {number}
      */
     maxRolesAssigned?: number;
+
+    /**
+     * Options for the select menu (and whether to use it or not).
+     *
+     */
+    selectMenu?: SelectMenuOptions;
 }

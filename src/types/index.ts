@@ -3,3 +3,4 @@ export * from "./MessageOptions.js";
 export * from "./RoleToEmojiData.js";
 export * from "./SelfRoleOptions.js";
 export * from "./ChannelProperties.js";
+export * from "./SelectMenuOptions.js";

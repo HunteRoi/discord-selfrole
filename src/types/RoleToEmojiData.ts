@@ -34,6 +34,7 @@ export interface RoleToEmojiData {
      *
      * @type {boolean}
      * @memberof RoleToEmojiData
+     * @deprecated
      */
     removeOnReact?: boolean;
 

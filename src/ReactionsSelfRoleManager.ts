@@ -48,11 +48,6 @@ export class ReactionsSelfRoleManager extends SelfRoleManager {
         super(client, options);
 
         const intents = new IntentsBitField(client.options.intents);
-        if (!intents.has(IntentsBitField.Flags.GuildMessages)) {
-            throw new Error(
-                "GUILD_MESSAGES intent is required to use this package!",
-            );
-        }
         if (!intents.has(IntentsBitField.Flags.GuildMessageReactions)) {
             throw new Error(
                 "GUILD_MESSAGE_REACTIONS intent is required to use this package!",
@@ -145,11 +140,23 @@ export class ReactionsSelfRoleManager extends SelfRoleManager {
 
         const emoji = userAction.emoji;
         const rteData = this.getRTE(userAction, channelOptions, emoji);
-        if (!rteData) {
+        if (!rteData || Array.isArray(rteData)) {
             this.emit(
                 SelfRoleManagerEvents.error,
                 null,
                 "This emoji cannot be found!",
+            );
+            return;
+        }
+        const role: Role | undefined | null =
+            rteData.role instanceof Role
+                ? rteData.role
+                : await userAction.message.guild?.roles.fetch(rteData.role);
+        if (!role) {
+            this.emit(
+                SelfRoleManagerEvents.error,
+                null,
+                `The role ${rteData.role} could not be found`,
             );
             return;
         }
@@ -158,17 +165,13 @@ export class ReactionsSelfRoleManager extends SelfRoleManager {
             (rte: RoleToEmojiData) => rte.role,
         );
         const memberRoles = [...member.roles.cache.values()];
-        const memberManagedRoles = memberRoles.filter((role: Role) =>
-            rolesFromEmojis.includes(role.id),
+        const memberManagedRoles = memberRoles.filter((r: Role) =>
+            rolesFromEmojis.includes(r.id),
         );
         const maxRolesReached =
             channelOptions.maxRolesAssigned &&
             memberManagedRoles.length >= channelOptions.maxRolesAssigned;
-        const memberHasRole = memberRoles.some((role: Role) =>
-            rteData.role instanceof Role
-                ? rteData.role === role
-                : rteData.role === role.id,
-        );
+        const memberHasRole = memberRoles.some((r: Role) => role === r);
 
         this.emit(
             isReactionRemoval
@@ -187,24 +190,13 @@ export class ReactionsSelfRoleManager extends SelfRoleManager {
             ((!rteData.removeOnReact && !isReactionRemoval) ||
                 (rteData.removeOnReact && isReactionRemoval));
 
-        const role: Role | undefined | null =
-            rteData.role instanceof Role
-                ? rteData.role
-                : await userAction.message.guild?.roles.fetch(rteData.role);
-        if (!role) {
-            this.emit(
-                SelfRoleManagerEvents.error,
-                null,
-                `The role ${rteData.role} could not be found`,
-            );
-            return;
-        }
-
         const userHasRequiredRoles =
-            rteData.requiredRoles?.every((role) =>
-                role instanceof Role
-                    ? memberRoles.includes(role)
-                    : memberRoles.map((r) => r.id).includes(role),
+            rteData.requiredRoles?.every((r) =>
+                r instanceof Role
+                    ? memberRoles.includes(r)
+                    : memberRoles
+                          .map((memberRole: Role) => memberRole.id)
+                          .includes(r),
             ) ?? true;
 
         switch (true) {
