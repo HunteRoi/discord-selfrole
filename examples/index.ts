@@ -15,7 +15,7 @@ const manager = new InteractionsSelfRoleManager(client, {
   channelsMessagesFetchLimit: 3
 });
 
-client.on('ready', async () => {
+client.on('clientReady', async () => {
   await manager.registerChannel('CHANNEL_ID', {
     rolesToEmojis: [
       {
