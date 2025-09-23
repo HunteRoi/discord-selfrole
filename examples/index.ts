@@ -1,4 +1,4 @@
-import { ButtonInteraction, ButtonStyle, Client, IntentsBitField, Role, StringSelectMenuInteraction, roleMention } from 'discord.js';
+import { ButtonInteraction, ButtonStyle, Client, IntentsBitField, MessageFlags, Role, roleMention, StringSelectMenuInteraction } from 'discord.js';
 
 import { InteractionsSelfRoleManager } from '../lib/index.js';
 
@@ -106,7 +106,7 @@ manager.on('messageCreate', (message) =>
 manager.on('messageDelete', (message) =>
   console.log(`Message ${message.id} deleted!`),
 );
-manager.on('interaction', async (rte, interaction) => {
+manager.on('interaction', async (_rte, interaction) => {
   console.log(`An interaction has been made by ${interaction.member.displayName}!`);
   interaction.isButton() && await interaction.editReply("You interacted with a button!");
   interaction.isStringSelectMenu() && await interaction.editReply("You interacted with a menu!");
@@ -117,7 +117,7 @@ manager.on('roleRemove', async (role, member, userAction) => {
   if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
     userAction.followUp && await userAction.followUp({
       content: `Your old role ${role} has been removed from you.`,
-      ephemeral: true
+      flags: MessageFlags.Ephemeral
     });
   }
 });
@@ -127,7 +127,7 @@ manager.on('roleAdd', async (role, member, userAction) => {
   if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
     await userAction.followUp({
       content: `The new role ${role} has been added to you.`,
-      ephemeral: true
+      flags: MessageFlags.Ephemeral
     });
   }
 });
@@ -139,7 +139,7 @@ manager.on(
     if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
       await userAction.followUp({
         content: `You reached or exceed the maximum number of roles (${nbRoles}/${maxRoles})! You cannot get ${role}.`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
   }
@@ -152,7 +152,7 @@ manager.on(
     if (userAction instanceof ButtonInteraction || userAction instanceof StringSelectMenuInteraction) {
       await userAction.followUp({
         content: `You don't have the required roles to get the role ${role}!`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
   }

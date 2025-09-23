@@ -233,6 +233,7 @@ export abstract class SelfRoleManager extends EventEmitter {
      * @returns The proper RoteToEmojiData
      */
     protected getRTE(
+        // biome-ignore lint/correctness/noUnusedFunctionParameters: the parameter is used in other function redefinitions
         sender:
             | ButtonInteraction
             | StringSelectMenuInteraction

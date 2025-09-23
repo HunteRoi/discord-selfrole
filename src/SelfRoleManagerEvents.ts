@@ -6,8 +6,8 @@ import {
     RoleResolvable,
     TextChannel,
 } from "discord.js";
-import type { UserAction } from "./types/UserAction.js";
 import type { ChannelOptions, RoleToEmojiData } from "./types/index.js";
+import type { UserAction } from "./types/UserAction.js";
 
 export enum SelfRoleManagerEvents {
     /**

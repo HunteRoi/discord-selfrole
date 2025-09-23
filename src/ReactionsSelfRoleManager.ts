@@ -192,8 +192,8 @@ export class ReactionsSelfRoleManager extends SelfRoleManager {
                 r instanceof Role
                     ? memberRoles.includes(r)
                     : memberRoles
-                        .map((memberRole: Role) => memberRole.id)
-                        .includes(r),
+                          .map((memberRole: Role) => memberRole.id)
+                          .includes(r),
             ) ?? true;
 
         switch (true) {

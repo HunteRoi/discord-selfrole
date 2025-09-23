@@ -1,7 +1,7 @@
 /**
  * The options for the interactions-based self-role manager.
  *
- * @exports
+ * @export
  * @extends SelfRoleOptions
  */
 export type InteractionsSelfRoleOptions = SelfRoleOptions & {

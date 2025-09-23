@@ -1,6 +1,6 @@
 import {
-    type APIMessageComponentEmoji,
     ActionRowBuilder,
+    type APIMessageComponentEmoji,
     ButtonBuilder,
     type ButtonInteraction,
     ButtonStyle,
@@ -10,6 +10,7 @@ import {
     type GuildMember,
     type Interaction,
     type Message,
+    MessageFlags,
     type ReactionEmoji,
     Role,
     StringSelectMenuBuilder,
@@ -66,8 +67,8 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
                     interaction.customId.startsWith(packagePrefix)
                 ) {
                     await interaction.deferReply({
-                        ephemeral: true,
-                        fetchReply: true,
+                        flags: MessageFlags.Ephemeral,
+                        withResponse: true,
                     });
                     await this.handleUserAction(interaction);
                 }
@@ -138,95 +139,101 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
                 clippedRolesToEmojis.map(async (clippedRoleToEmoji) =>
                     clippedRoleToEmoji.role instanceof Role
                         ? clippedRoleToEmoji.role
-                        : await channel.guild.roles.fetch(clippedRoleToEmoji.role)
-                )
+                        : await channel.guild.roles.fetch(
+                              clippedRoleToEmoji.role,
+                          ),
+                ),
             );
             const minValues = channelOptions.selectMenu?.minValues
                 ? Math.min(
-                    Math.max(1, channelOptions.selectMenu.minValues),
-                    clippedRolesToEmojis.length,
-                    MAX_VALUES,
-                )
+                      Math.max(1, channelOptions.selectMenu.minValues),
+                      clippedRolesToEmojis.length,
+                      MAX_VALUES,
+                  )
                 : undefined;
             const maxValues = channelOptions.selectMenu?.maxValues
                 ? Math.min(
-                    Math.max(1, channelOptions.selectMenu.maxValues),
-                    clippedRolesToEmojis.length,
-                    MAX_VALUES,
-                )
+                      Math.max(1, channelOptions.selectMenu.maxValues),
+                      clippedRolesToEmojis.length,
+                      MAX_VALUES,
+                  )
                 : undefined;
 
             const components = channelOptions.selectMenu
                 ? [
-                    new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
-                        new StringSelectMenuBuilder({
-                            min_values: minValues,
-                            max_values: maxValues,
-                            custom_id: `${packagePrefix}${selectMenuPrefix}roles-${channel.id}`,
-                            placeholder:
-                                channelOptions.selectMenu?.placeholder ??
-                                "Select a role",
-                        }).addOptions(
-                            clippedRolesToEmojis.map((rte: RoleToEmojiData, index: number) => {
-                                return new StringSelectMenuOptionBuilder()
-                                    .setEmoji(rte.emoji.toString())
-                                    .setLabel(
-                                        roles[index]?.name ?? rte.role.toString(),
-                                    )
-                                    .setValue(
-                                        roles[index]?.id ?? rte.role.toString()
-                                    )
-                                    .setDescription(rte.smallNote ?? " ");
-                            }),
-                        ),
-                    ),
-                    new ActionRowBuilder<ButtonBuilder>().addComponents(
-                        new ButtonBuilder()
-                            .setCustomId(
-                                `${packagePrefix}${selectMenuPrefix}reset-${channel.id}`,
-                            )
-                            .setEmoji(
-                                channelOptions.selectMenu.resetButton
-                                    ?.emoji ?? "🔄",
-                            )
-                            .setLabel(
-                                channelOptions.selectMenu.resetButton
-                                    ?.label ?? "Reset",
-                            )
-                            .setStyle(
-                                channelOptions.selectMenu.resetButton
-                                    ?.style ?? ButtonStyle.Danger,
-                            ),
-                    ),
-                ]
+                      new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+                          new StringSelectMenuBuilder({
+                              min_values: minValues,
+                              max_values: maxValues,
+                              custom_id: `${packagePrefix}${selectMenuPrefix}roles-${channel.id}`,
+                              placeholder:
+                                  channelOptions.selectMenu?.placeholder ??
+                                  "Select a role",
+                          }).addOptions(
+                              clippedRolesToEmojis.map(
+                                  (rte: RoleToEmojiData, index: number) => {
+                                      return new StringSelectMenuOptionBuilder()
+                                          .setEmoji(rte.emoji.toString())
+                                          .setLabel(
+                                              roles[index]?.name ??
+                                                  rte.role.toString(),
+                                          )
+                                          .setValue(
+                                              roles[index]?.id ??
+                                                  rte.role.toString(),
+                                          )
+                                          .setDescription(rte.smallNote ?? " ");
+                                  },
+                              ),
+                          ),
+                      ),
+                      new ActionRowBuilder<ButtonBuilder>().addComponents(
+                          new ButtonBuilder()
+                              .setCustomId(
+                                  `${packagePrefix}${selectMenuPrefix}reset-${channel.id}`,
+                              )
+                              .setEmoji(
+                                  channelOptions.selectMenu.resetButton
+                                      ?.emoji ?? "🔄",
+                              )
+                              .setLabel(
+                                  channelOptions.selectMenu.resetButton
+                                      ?.label ?? "Reset",
+                              )
+                              .setStyle(
+                                  channelOptions.selectMenu.resetButton
+                                      ?.style ?? ButtonStyle.Danger,
+                              ),
+                      ),
+                  ]
                 : clippedRolesToEmojis
-                    .reduce(
-                        // Split the roles into chunks of 5 (because Discord only allows 5 buttons per row)
-                        (
-                            rteByFive: RoleToEmojiData[][],
-                            currentRte: RoleToEmojiData,
-                            index: number,
-                        ) => {
-                            const chunkIndex = Math.floor(index / 5);
-                            if (!rteByFive[chunkIndex])
-                                rteByFive[chunkIndex] = [];
-                            rteByFive[chunkIndex].push(currentRte);
-                            return rteByFive;
-                        },
-                        [],
-                    )
-                    .map((rteData: RoleToEmojiData[]) =>
-                        new ActionRowBuilder<ButtonBuilder>().addComponents(
-                            ...rteData.map((rte: RoleToEmojiData) =>
-                                new ButtonBuilder()
-                                    .setEmoji(rte.emoji.toString())
-                                    .setCustomId(
-                                        `${packagePrefix}${buttonPrefix}${rte.role instanceof Role ? rte.role.id : rte.role}`,
-                                    )
-                                    .setStyle(ButtonStyle.Secondary),
-                            ),
-                        ),
-                    );
+                      .reduce(
+                          // Split the roles into chunks of 5 (because Discord only allows 5 buttons per row)
+                          (
+                              rteByFive: RoleToEmojiData[][],
+                              currentRte: RoleToEmojiData,
+                              index: number,
+                          ) => {
+                              const chunkIndex = Math.floor(index / 5);
+                              if (!rteByFive[chunkIndex])
+                                  rteByFive[chunkIndex] = [];
+                              rteByFive[chunkIndex].push(currentRte);
+                              return rteByFive;
+                          },
+                          [],
+                      )
+                      .map((rteData: RoleToEmojiData[]) =>
+                          new ActionRowBuilder<ButtonBuilder>().addComponents(
+                              ...rteData.map((rte: RoleToEmojiData) =>
+                                  new ButtonBuilder()
+                                      .setEmoji(rte.emoji.toString())
+                                      .setCustomId(
+                                          `${packagePrefix}${buttonPrefix}${rte.role instanceof Role ? rte.role.id : rte.role}`,
+                                      )
+                                      .setStyle(ButtonStyle.Secondary),
+                              ),
+                          ),
+                      );
 
             const messageOptions = constructMessageOptions(
                 channelOptions,
@@ -314,7 +321,7 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
     async #handleButtonInteraction(
         userAction: ButtonInteraction,
         channelOptions: ChannelOptions,
-        member: GuildMember,
+        _member: GuildMember,
     ): Promise<void> {
         const rteData = this.getRTE(userAction, channelOptions);
         if (!rteData || Array.isArray(rteData)) {
@@ -496,8 +503,8 @@ export class InteractionsSelfRoleManager extends SelfRoleManager {
                 r instanceof Role
                     ? memberRoles.includes(r)
                     : memberRoles
-                        .map((memberRole: Role) => memberRole.id)
-                        .includes(r),
+                          .map((memberRole: Role) => memberRole.id)
+                          .includes(r),
             ) ?? true;
 
         const userWantsToAddRole = !memberHasRole;
