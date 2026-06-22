@@ -30,4 +30,4 @@ async function addRole(
     return null;
 }
 
-export { removeRole, addRole };
+export { addRole, removeRole };
